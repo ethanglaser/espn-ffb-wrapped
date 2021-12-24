@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'espn';
+            src: url('/static/fonts/esp.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        
+        }
+        .espn {
+            /* font-family: 'Black Ops One', cursive; */
+            font-family: 'espn';
+            font-size: 16px;
+        }
+        a.button1{
+            display:inline-block;
+            padding:0.35em 1.2em;
+            border:0.1em solid #000000;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.12em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            font-weight:300;
+            color:#000000;
+            text-align:center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        a.button1:hover{
+            color:#ffffff;
+            background-color:#000000;
+        }
+        @media all and (max-width:30em){
+            a.button1{
+                display:block;
+                margin:0.4em auto;
+            }
+        }
+    </style>
+</head>
+<form action="/" method = "POST">
+    <p><span class="espn">League ID:</span> This field can be found in the url of any webpage in your fantasy league, with an example pictured below. </p>
+    <p><span class="espn">Season ID:</span> This field can also be found in the url, or just enter the year of the desired season.</p>
+    <img src="/static/espnffb.PNG" alt="Url capture" width=650>
+    <p>The remaining to fields are cookies.</p>
+    <ol>
+        <li>Go to Chrome Settings</li>
+        <li>Select <i>Privacy and security</i> on the left</li>
+        <li>Select <i>Cookies and other site data</i></li>
+        <li>Select <i>See all cookies and site data</i></li>
+        <li>Search for "espn.com", open and copy the content of <i>SWID</i> and <i>espn_s2</i></li>
+      </ol>
+      <img src="/static/espncookies.PNG" alt="cookies capture" width=450>
+      <p></p>
+      <a onclick="history.back()" class="button1"><span class="espn">Home</span> </a>
+
+</form>
+</html>

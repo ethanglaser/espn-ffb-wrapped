@@ -1,0 +1,92 @@
+<head>
+    <style>
+        h1 {text-align: center;}
+        p {text-align: center;}
+        pp {text-align: center;}
+        div {text-align: center;}
+        ol {text-align: center;}
+        li {text-align: center;}
+        .centerImage
+        {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        } 
+        .leftImage {
+            display: inline;
+            float: left;
+            margin-left: auto;
+        }
+        .rightImage {
+            display: inline;
+            float: right;
+            margin-right: auto;
+        }
+        @font-face {
+            font-family: 'espn';
+            src: url('/static/fonts/esp.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        .espn {
+            /* font-family: 'Black Ops One', cursive; */
+            font-family: 'espn';
+            font-size: 24px;
+        }
+        input.button1{
+            display:inline-block;
+            padding:0.35em 1.2em;
+            border:0.1em solid #000000;
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.12em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            font-weight:300;
+            color:#000000;
+            text-align:center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        input.button1:hover{
+            color:#ffffff;
+            background-color:#000000;
+        }
+        @media all and (max-width:30em){
+            input.button1{
+                display:block;
+                margin:0.4em auto;
+            }
+        }
+        input[type='submit'] { 
+            font-family: 'espn'; 
+        }
+        input[type='text'] {
+            font-size:15pt; 
+            size: 2px;
+        }
+        pp {
+            display: inline-block;
+        }
+
+    </style>        
+</head>
+<form action="/info" method = "POST">
+    <img src="/static/ffbclipart.PNG" class="centerImage" alt="ffb clipart" width=450>
+    <p><span class="espn">Welcome to espn fantasy football wrapped.</span></p>
+    <p>Enter information for your season below to get analysis on draft results, team performance comparisons, hypothetical scenarios, and more!</p>
+    <p> For information on filling in the fields below, select the info button, otherwise fill them in, hit submit, and see the results in the downloaded Excel file!</p>
+    <br><br>
+    <img src="/static/ceedee.jpg" class="leftImage" alt="ceedee" width=168>
+    <img src="/static/dong.jpg" class="leftImage" alt="dong" width=260>
+    <pp><span class="espn">League ID:</span> <input type = "text" name = "league_id" />
+    <br><span class="espn">Season ID:</span> <input type = "text" name = "season_id" />
+    <br><span class="espn">SWID:</span> <input type = "text" name = "swid" />
+    <br><span class="espn">espn_s2:</span> <input type = "text" name = "espn_s2" />
+    <br><br><input type = "submit" class = "button1" name = "Submit" value = "Submit" />
+    <br><br><input type = "submit" class = "button1" name = "Info" value = "Info" /></pp>
+    <img src="/static/lamar.jpg" class="rightImage" alt="lamar" width=239>
+    <img src="/static/tyreek.png" class="rightImage" alt="tyreek" width=151>
+    <br><br><br><br><br><br>
+    <footer>&copy; Copyright 2021 EPG</footer>
+</form>
