@@ -3,7 +3,6 @@ from headtohead import *
 
  
 app = Flask(__name__)
-
  
 @app.route('/info', methods = ['POST', 'GET'])
 def data():
