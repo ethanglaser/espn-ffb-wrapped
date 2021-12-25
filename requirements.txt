@@ -2,3 +2,6 @@ requests
 pandas
 openpyxl
 Flask
+django
+gunicorn
+django-heroku
