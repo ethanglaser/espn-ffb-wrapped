@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "fast-plains-72353",
+    "espn-ffb-wrapped",
 ]
 
 MIDDLEWARE = [
