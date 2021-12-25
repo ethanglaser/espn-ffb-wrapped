@@ -1,1 +1,1 @@
-web: gunicorn espn-ffb-wrapped:app
+web: gunicorn espn-ffb-wrapped:app.py
