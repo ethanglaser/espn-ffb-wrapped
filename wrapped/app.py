@@ -12,9 +12,16 @@ def data():
     if request.method == 'POST':
         if request.form.get("Submit", False) == 'Submit':
             try:
-                f1, f2 = get_h2h(request.form.get("league_id", False), request.form.get("season_id", False), request.form.get("swid", False), request.form.get("espn_s2", False))
+                league_id = request.form.get("league_id", False)
+                season_id = request.form.get("season_id", False)
+                swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
+                try:
+                    f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)
+                    #f1, f2 = get_h2h(request.form.get("league_id", False), request.form.get("season_id", False), request.form.get("swid", False), request.form.get("espn_s2", False))
+                except:
+                    return f"Error: Invalid League ID, Season ID, or SWID {league_id} {season_id} {swid} {espn_s2}"
             except:
-                return f"Error: Invalid League ID, Season ID, or SWID"
+                return f"could not get from request.form"
             return send_file(f1, as_attachment=True)#, send_file(f2, as_attachment=True)
         if request.form.get("Info", False) == 'Info':
             return render_template('info.html')
