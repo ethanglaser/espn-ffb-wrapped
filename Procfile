@@ -1,1 +1,1 @@
-web: gunicorn espn-ffb-wrapped:wsgi
+web: gunicorn wsgi:app
