@@ -3,7 +3,7 @@ from headtohead import *
 
  
 app = Flask(__name__)
- 
+
 @app.route('/info', methods = ['POST', 'GET'])
 def data():
     if request.method == 'GET':
@@ -27,9 +27,6 @@ def info():
 @app.route('/', methods = ['POST', 'GET'])
 def home():
     return render_template('league_form.html')
-
-
-# construct your app
 
 @app.route("/get-file")
 def get_file():
