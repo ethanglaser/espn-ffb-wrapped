@@ -1,3 +1,3 @@
-from espn-ffb-wrapped import app
+import app
 
 server = app.server
