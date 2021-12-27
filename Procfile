@@ -1,1 +1,1 @@
-web: gunicorn espn-ffb-wrapped:index:server
+web: gunicorn index:server
