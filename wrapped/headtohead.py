@@ -64,23 +64,18 @@ def get_h2h(leagueId, seasonId, swid, espn_s2):
         scheduleinfo[team1]['headtohead'] = headtohead
         scheduleinfo[team1]['sameschedule'] = sameschedule
 
-    try:
-        h = [scheduleinfo[key]['headtohead'] for key in sorted(scheduleinfo.keys())]
-        s = [scheduleinfo[key]['sameschedule'] for key in sorted(scheduleinfo.keys())]
-        t = [scheduleinfo[key]['name'] for key in sorted(scheduleinfo.keys())]
-    except:
-        return "False1"
-    try:
-        hdf = pd.DataFrame(h, columns = t, index = t)
-        sdf = pd.DataFrame(s, columns = t, index = t)
-    except:
-        return "False2"
-    try:
-        hdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx')
-        sdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx')
-    except:
-        return "False3"
-    return 'League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx', 'League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx'
+    
+    h = [scheduleinfo[key]['headtohead'] for key in sorted(scheduleinfo.keys())]
+    s = [scheduleinfo[key]['sameschedule'] for key in sorted(scheduleinfo.keys())]
+    t = [scheduleinfo[key]['name'] for key in sorted(scheduleinfo.keys())]
+    hdf = pd.DataFrame(h, columns = t, index = t)
+    sdf = pd.DataFrame(s, columns = t, index = t)
+    csv1 = hdf.to_csv(index=False)
+    csv2 = sdf.to_csv(index=False)
+    return csv1, csv2
+    # hdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx')
+    # sdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx')
+    # return 'League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx', 'League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx'
 
 if __name__ == "__main__":
     leagueId = sys.argv[3]
