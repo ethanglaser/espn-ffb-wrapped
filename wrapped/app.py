@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, Response, send_file, redirect, url_for
-from headtohead import *
+from wrapped.headtohead import *
 
  
 app = Flask(__name__)
