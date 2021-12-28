@@ -70,8 +70,8 @@ def get_h2h(leagueId, seasonId, swid, espn_s2):
     t = [scheduleinfo[key]['name'] for key in sorted(scheduleinfo.keys())]
     hdf = pd.DataFrame(h, columns = t, index = t)
     sdf = pd.DataFrame(s, columns = t, index = t)
-    csv1 = hdf.to_csv(index=False)
-    csv2 = sdf.to_csv(index=False)
+    csv1 = hdf.to_html()
+    csv2 = sdf.to_html()
     return csv1, csv2
     # hdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx')
     # sdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx')
