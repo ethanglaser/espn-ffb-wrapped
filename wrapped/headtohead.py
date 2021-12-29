@@ -73,8 +73,8 @@ def get_h2h(leagueId, seasonId, swid, espn_s2):
         t = [scheduleinfo[key]['name'] for key in sorted(scheduleinfo.keys())]
         hdf = pd.DataFrame(h, columns = t, index = t)
         sdf = pd.DataFrame(s, columns = t, index = t)
-        hdf.to_html('headtohead.html')
-        sdf.to_html('sameschedule.html')
+        hdf.to_html('wrapped/templates/headtohead.html')
+        sdf.to_html('wrapped/templates/sameschedule.html')
     except:
         return "Error creating dataframes."
     # hdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx')
