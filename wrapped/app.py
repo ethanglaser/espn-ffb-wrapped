@@ -18,15 +18,20 @@ def data():
                 a = get_h2h(league_id, season_id, swid, espn_s2)
                 if a:
                     return f"{a}"
-                return render_template('headtohead.html')
                 try:
-                    f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)
-                    #f1, f2 = get_h2h(request.form.get("league_id", False), request.form.get("season_id", False), request.form.get("swid", False), request.form.get("espn_s2", False))
+                    return render_template('league_results.html')
+                    league_results(league_id)
                 except:
-                    return f"Error: Invalid League ID, Season ID, or SWID {league_id} {season_id} {swid} {espn_s2}"
+                    return f"Error redirecting to league results."
+                #return render_template('league_results.html')
+                # try:
+                #     f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)
+                #     #f1, f2 = get_h2h(request.form.get("league_id", False), request.form.get("season_id", False), request.form.get("swid", False), request.form.get("espn_s2", False))
+                # except:
+                #     return f"Error: Invalid League ID, Season ID, or SWID {league_id} {season_id} {swid} {espn_s2}"
             except:
                 return f"could not get from request.form"
-            return send_file(f1, as_attachment=True)#, send_file(f2, as_attachment=True)
+            #return send_file(f1, as_attachment=True)#, send_file(f2, as_attachment=True)
         if request.form.get("Info", False) == 'Info':
             return render_template('info.html')
 
@@ -38,6 +43,18 @@ def info():
 @app.route('/', methods = ['POST', 'GET'])
 def home():
     return render_template('league_form.html')
+
+@app.route('/league_results', methods = ['POST', 'GET'])
+def league_results():
+    #if request.method == 'POST':
+    if request.form.get("h2h", False) == 'Head to head':
+        return render_template('headtohead.html')
+    elif request.form.get("ss", False) == 'Same schedule':
+        return render_template('sameschedule.html')
+    elif request.form.get("team", False) == 'Team1':
+        return f"COMING SOON"
+    else:
+        return f"ERROR"
 
 @app.route("/get-file")
 def get_file():
