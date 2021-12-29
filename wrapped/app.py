@@ -15,8 +15,8 @@ def data():
                 league_id = request.form.get("league_id", False)
                 season_id = request.form.get("season_id", False)
                 swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
-                var = get_h2h(league_id, season_id, swid, espn_s2)
-                return render_template(var[0])
+                get_h2h(league_id, season_id, swid, espn_s2)
+                return render_template('headtohead.html')
                 try:
                     f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)
                     #f1, f2 = get_h2h(request.form.get("league_id", False), request.form.get("season_id", False), request.form.get("swid", False), request.form.get("espn_s2", False))
