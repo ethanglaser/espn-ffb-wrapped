@@ -15,7 +15,9 @@ def data():
                 league_id = request.form.get("league_id", False)
                 season_id = request.form.get("season_id", False)
                 swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
-                get_h2h(league_id, season_id, swid, espn_s2)
+                a = get_h2h(league_id, season_id, swid, espn_s2)
+                if a:
+                    return f"{a}"
                 return render_template('headtohead.html')
                 try:
                     f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)

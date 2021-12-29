@@ -18,7 +18,10 @@ def gather_data(leagueId, seasonId, swid, espn_s2):
     return data, data2
 
 def get_h2h(leagueId, seasonId, swid, espn_s2):
-    data, data2 = gather_data(leagueId, seasonId, swid, espn_s2)
+    try:
+        data, data2 = gather_data(leagueId, seasonId, swid, espn_s2)
+    except:
+        return "Error gathering data from api."
 
     teams = {}
     for team in data['teams']:
@@ -64,15 +67,16 @@ def get_h2h(leagueId, seasonId, swid, espn_s2):
         scheduleinfo[team1]['headtohead'] = headtohead
         scheduleinfo[team1]['sameschedule'] = sameschedule
 
-    
-    h = [scheduleinfo[key]['headtohead'] for key in sorted(scheduleinfo.keys())]
-    s = [scheduleinfo[key]['sameschedule'] for key in sorted(scheduleinfo.keys())]
-    t = [scheduleinfo[key]['name'] for key in sorted(scheduleinfo.keys())]
-    hdf = pd.DataFrame(h, columns = t, index = t)
-    sdf = pd.DataFrame(s, columns = t, index = t)
-    hdf.to_html('headtohead.html')
-    sdf.to_html('sameschedule.html')
-    return
+    try:
+        h = [scheduleinfo[key]['headtohead'] for key in sorted(scheduleinfo.keys())]
+        s = [scheduleinfo[key]['sameschedule'] for key in sorted(scheduleinfo.keys())]
+        t = [scheduleinfo[key]['name'] for key in sorted(scheduleinfo.keys())]
+        hdf = pd.DataFrame(h, columns = t, index = t)
+        sdf = pd.DataFrame(s, columns = t, index = t)
+        hdf.to_html('headtohead.html')
+        sdf.to_html('sameschedule.html')
+    except:
+        return "Error creating dataframes."
     # hdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx')
     # sdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx')
     # return 'League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx', 'League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx'
