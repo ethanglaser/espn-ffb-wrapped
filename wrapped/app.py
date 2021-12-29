@@ -18,6 +18,7 @@ def data():
                 a = get_h2h(league_id, season_id, swid, espn_s2)
                 if a:
                     return f"{a}"
+                return f"we made it"
                 return render_template('headtohead.html')
                 try:
                     f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)
