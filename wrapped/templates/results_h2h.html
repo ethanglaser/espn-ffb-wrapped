@@ -1,22 +1,2 @@
-<!--Navigation bar-->
-<div id="nav-placeholder">
-
-</div>
-
-<script>
-$(function(){
-  $("#nav-placeholder").load("results_navbar.html");
-});
-</script>
-<!--end of Navigation bar-->
-<!--h2h-->
-<div id="h2h-placeholder">
-
-</div>
-
-<script>
-$(function(){
-  $("#h2h-placeholder").load("headtohead.html");
-});
-</script>
-<!--end of h2h-->
+{% include 'results_navbar.html' %}
+{% include 'headtohead.html' %}

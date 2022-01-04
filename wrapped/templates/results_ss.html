@@ -1,22 +1,2 @@
-<!--Navigation bar-->
-<div id="nav-placeholder">
-
-</div>
-
-<script>
-$(function(){
-  $("#nav-placeholder").load("results_navbar.html");
-});
-</script>
-<!--end of Navigation bar-->
-<!--ss-->
-<div id="ss-placeholder">
-
-</div>
-
-<script>
-$(function(){
-  $("#ss-placeholder").load("sameschedule.html");
-});
-</script>
-<!--end of ss-->
+{% include 'results_navbar.html' %}
+{% include 'sameschedule.html' %}

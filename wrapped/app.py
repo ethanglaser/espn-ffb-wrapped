@@ -19,7 +19,7 @@ def data():
                 if a:
                     return f"{a}"
                 try:
-                    return render_template('league_results.html')
+                    return render_template('results_home.html')
                     league_results(league_id)
                 except:
                     return f"Error redirecting to league results."
@@ -48,9 +48,11 @@ def home():
 def league_results():
     #if request.method == 'POST':
     if request.form.get("h2h", False) == 'Head to head':
-        return render_template('headtohead.html')
+        return render_template('results_h2h.html')
     elif request.form.get("ss", False) == 'Same schedule':
-        return render_template('sameschedule.html')
+        return render_template('results_ss.html')
+    elif request.form.get("home", False) == 'Home':
+        return render_template('results_home.html')
     elif request.form.get("team", False) == 'Team1':
         return f"COMING SOON"
     else:
