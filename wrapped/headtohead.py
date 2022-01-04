@@ -9,17 +9,21 @@ def gather_data(leagueId, seasonId, swid, espn_s2):
     print(leagueId, seasonId, swid, espn_s2)
     url = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/' + str(seasonId) + '/segments/0/leagues/'  + str(leagueId) + '?'
     url2 = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/' + str(seasonId) + '/segments/0/leagues/'  + str(leagueId) + '?view=mMatchup'
+    url3 = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/' + str(seasonId) + '/segments/0/leagues/'  + str(leagueId) + '?view=mSettings'
 
     r = requests.get(url, cookies={"swid": swid, "espn_s2": espn_s2})
     data = (json.loads(r.content))
     r2 = requests.get(url2, cookies={"swid": swid, "espn_s2": espn_s2})
     data2 = json.loads(r2.content)
 
-    return data, data2
+    r3 = requests.get(url3, cookies={"swid": swid, "espn_s2": espn_s2})
+    data3 = json.loads(r3.content)
+    regular_season_length = data3['settings']['scheduleSettings']['matchupPeriodCount']
+    return data, data2, regular_season_length
 
 def get_h2h(leagueId, seasonId, swid, espn_s2):
     try:
-        data, data2 = gather_data(leagueId, seasonId, swid, espn_s2)
+        data, data2, reg_szn_len = gather_data(leagueId, seasonId, swid, espn_s2)
     except:
         return "Error gathering data from api."
 
@@ -29,7 +33,7 @@ def get_h2h(leagueId, seasonId, swid, espn_s2):
         teams[team['id']]['name'] = team['location'] + team['nickname']
         teams[team['id']]['scores'] = []
         teams[team['id']]['opponents'] = []
-    for game in data2['schedule'][:13 * int(len(teams) / 2)]:
+    for game in data2['schedule'][:reg_szn_len * int(len(teams) / 2)]:
         teams[game['away']['teamId']]['scores'].append(game['away']['totalPoints'])
         teams[game['away']['teamId']]['opponents'].append(game['home']['teamId'])
         teams[game['home']['teamId']]['scores'].append(game['home']['totalPoints'])
