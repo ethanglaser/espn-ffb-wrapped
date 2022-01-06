@@ -4,18 +4,25 @@
  /* Navbar container */
         .navbar {
         overflow: hidden;
-        background-color: #333;
-        font-family: Arial;
+        background-color: rgb(218, 7, 7);
+        font-family: 'espn';
         }
 
+        @font-face {
+            font-family: 'espn';
+            src: url('/static/fonts/esp.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         /* Links inside the navbar */
         .navbar input {
-        float: left;
-        font-size: 16px;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
+            font-family: 'espn';
+            float: left;
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
         }
 
         /* The dropdown container */
@@ -38,7 +45,7 @@
 
         /* Add a red background color to navbar links on hover */
         .navbar input:hover, .dropdown:hover .dropbtn {
-        background-color: red;
+        background-color: rgb(155, 8, 8);
         }
 
         /* Dropdown content (hidden by default) */
@@ -53,17 +60,19 @@
 
         /* Links inside the dropdown */
         .dropdown-content input {
-        float: none;
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        text-align: left;
+            font-family: Arial;
+            font-weight: bold;
+            float: none;
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
         }
 
         /* Add a grey background color to dropdown links on hover */
         .dropdown-content input:hover {
-        background-color: #ddd;
+        background-color: rgb(155, 8, 8);
         }
 
         /* Show the dropdown menu on hover */
@@ -71,20 +80,34 @@
         display: block;
         }
 
+        .arrow {
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 3px;
+        }
+
+        .down {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        }
         </style>        
 </head>
 <form action="/league_results" method = "POST">
     <div class="navbar">
-        <input type = "submit" class = "button1" name = "home" value = "Home" />
-        <input type = "submit" class = "button1" name = "h2h" value = "Head to head" />
-        <input type = "submit" class = "button1" name = "ss" value = "Same schedule" />
+        <input type = "submit" class = "navbar" name = "home" value = "Home" />
+        <input type = "submit" class = "navbar" name = "draft" value = "Draft analysis" />
+        <input type = "submit" class = "navbar" name = "h2h" value = "Head to head" />
+        <input type = "submit" class = "navbar" name = "ss" value = "Same schedule" />
+        <input type = "submit" class = "navbar" name = "leader" value = "Leaderboard" />
         <div class="dropdown">
-        <button class="dropbtn">Dropdown
-            <i class="fa fa-caret-down"></i>
+        <button class="dropbtn">Teams
+            <i class="arrow down"></i>
         </button>
         <div class="dropdown-content">
-            <input type = "submit" class = "button1" name = "team" value = "Team1" />
-            <input type = "submit" class = "button1" name = "team" value = "Team2" />
+            {% for team in teams %}
+            <input type = "submit" class = "navbar" name = "{{team}}" value = "{{team}}" style="width:300px" />
+            {% endfor %}
         </div>
         </div>
     </div>

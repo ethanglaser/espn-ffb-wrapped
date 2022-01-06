@@ -1,2 +1,20 @@
 {% include 'results_navbar.html' %}
-<h3>Hello Anirudh</h3>
+<style>
+    @font-face {
+            font-family: 'espn';
+            src: url('/static/fonts/esp.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    .blackespn {
+        font-family: 'espn';
+        color: black;
+    }
+</style>
+<form>
+    <h1 class="blackespn">{{league_name}} Wrapped</h1>
+    <p><h4 class="blackespn">Head to head:</h4>  See how many weeks each team would have beaten each other team if they had faced off every week.</p>
+    <p><h4 class="blackespn">Same schedule:</h4>  See how well teams would have performed if they had had a different team's schedule. (Note: The record will likely have fewer games since matchups against that team are not counted)</p>
+    <p><h4 class="blackespn">Expected wins:</h4>  This is calculated on a weekly basis as the ratio of number of teams outscored / the total opponents. (The highest scoring team of the week would have 1 expected win, lowest would have 0)</p>
+
+</form>

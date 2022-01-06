@@ -19,8 +19,11 @@ def data():
                 if a:
                     return f"{a}"
                 try:
-                    return render_template('results_home.html')
-                    league_results(league_id)
+                    with open('wrapped/static/team_names.pkl', 'rb') as f:
+                        teams = pickle.load(f)
+                    league_name = get_league_name(league_id, season_id, swid, espn_s2)
+                    print(league_name)
+                    return render_template('results_home.html', league_name=league_name, teams=[teams[team]['name'] for team in teams.keys()])
                 except:
                     return f"Error redirecting to league results."
                 #return render_template('league_results.html')
@@ -46,17 +49,25 @@ def home():
 
 @app.route('/league_results', methods = ['POST', 'GET'])
 def league_results():
-    #if request.method == 'POST':
+    with open('wrapped/static/team_names.pkl', 'rb') as f:
+        teams = pickle.load(f)
+    team_names = [teams[team]['name'] for team in teams.keys()]
     if request.form.get("h2h", False) == 'Head to head':
-        return render_template('results_h2h.html')
+        return render_template('results_h2h.html', teams=team_names)
     elif request.form.get("ss", False) == 'Same schedule':
-        return render_template('results_ss.html')
+        return render_template('results_ss.html', teams=team_names)
     elif request.form.get("home", False) == 'Home':
-        return render_template('results_home.html')
-    elif request.form.get("team", False) == 'Team1':
-        return f"COMING SOON"
+        return render_template('results_home.html', teams=team_names)
+    elif request.form.get("draft", False) == 'Draft analysis':
+        return render_template('results_draft.html', teams=team_names)
+    elif request.form.get("leader", False) == 'Leaderboard':
+        return render_template('results_leaderboard.html', teams=team_names)
     else:
-        return f"ERROR"
+        print("ab")
+        for team in teams.keys():
+            print(teams[team]['name'])
+            if request.form.get(teams[team]['name'], False) == teams[team]['name']:
+                return render_template('team_page.html', teamname=teams[team]['name'], record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names)
 
 @app.route("/get-file")
 def get_file():
