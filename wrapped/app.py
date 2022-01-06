@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, Response, send_file, redirect, url_for
 from wrapped.headtohead import *
+import os
+
 
  
 app = Flask(__name__)
@@ -12,6 +14,10 @@ def data():
     if request.method == 'POST':
         if request.form.get("Submit", False) == 'Submit':
             try:
+                if os.path.exists("wrapped/templates/sameschedule.html"):
+                    os.remove("wrapped/templates/sameschedule.html")
+                if os.path.exists("wrapped/templates/headtohead.html"):
+                    os.remove("wrapped/templates/headtohead.html")
                 league_id = request.form.get("league_id", False)
                 season_id = request.form.get("season_id", False)
                 swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
