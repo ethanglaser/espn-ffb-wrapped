@@ -131,3 +131,4 @@ dmypy.json
 *head2head.html
 *sameschedule.html
 *.pkl
+wrapped/templates/teams/*

@@ -92,10 +92,10 @@ def get_h2h(leagueId, seasonId, swid, espn_s2):
             team_df = pd.DataFrame(record_logs, index=opp_names, columns=['Head to Head', 'Same Schedule'])
         except:
             return 'Error creating dataframe.'
-        try:
-            team_df.to_html('wrapped/templates/teams/' + teams[current_team]['name'] + '.html')
-        except:
-            return 'Error creating html file.'
+        # try:
+        #     team_df.to_html('wrapped/templates/teams/' + teams[current_team]['name'] + '.html')
+        # except:
+        #     return 'Error creating html file.'
         scheduleinfo[current_team]['name'] = teams[current_team]['name']
         scheduleinfo[current_team]['headtohead'] = headtohead
         scheduleinfo[current_team]['sameschedule'] = sameschedule
