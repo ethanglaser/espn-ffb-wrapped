@@ -128,7 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-*head2head.html
-*sameschedule.html
+
 *.pkl
 wrapped/templates/teams/*

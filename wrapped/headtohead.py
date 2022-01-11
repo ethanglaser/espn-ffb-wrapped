@@ -173,8 +173,9 @@ def get_h2h(leagueId, seasonId, swid, espn_s2):
         positions = []
         roster_logs = []
         for position in roster_results.keys():
-            positions.append(position)
-            roster_logs.append([roster_results[position][current_team]['average'], roster_results[position][current_team]['place']])
+            if position != 'Bench (BE)' and position != 'Injured Reserve (IR)':
+                positions.append(position)
+                roster_logs.append([roster_results[position][current_team]['average'], roster_results[position][current_team]['place']])
 
         roster_df = pd.DataFrame(roster_logs, index=positions, columns=['Average', 'Place'])
         #except:
