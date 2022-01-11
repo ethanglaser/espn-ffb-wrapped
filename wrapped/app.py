@@ -28,7 +28,6 @@ def data():
                     with open('wrapped/static/team_names.pkl', 'rb') as f:
                         teams = pickle.load(f)
                     league_name = get_league_name(league_id, season_id, swid, espn_s2)
-                    print(league_name)
                     return render_template('results_home.html', league_name=league_name, teams=[teams[team]['name'] for team in teams.keys()])
                 except:
                     return f"Error redirecting to league results."
