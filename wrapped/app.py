@@ -52,7 +52,7 @@ def info():
 def home():
     return render_template('league_form.html')
 
-@app.route('/league_results', methods = ['POST', 'GET'])
+@app.route('/league_results', methods = ['POST'])
 def league_results():
     with open('wrapped/static/team_names.pkl', 'rb') as f:
         teams = pickle.load(f)
@@ -66,7 +66,11 @@ def league_results():
     elif request.form.get("draft", False) == 'Draft analysis':
         return render_template('results_draft.html', teams=team_names)
     elif request.form.get("leader", False) == 'Leaderboard':
-        return render_template('results_leaderboard.html', teams=team_names)
+        t, d = leaderboard(status=True)
+        return render_template('results_leaderboard.html', teams=t, df=d)
+        # with open('wrapped/static/roster_df.pkl', 'rb') as f:
+        #     df = pickle.load(f)
+        # return render_template('results_leaderboard.html', teams=team_names, df=df)
     else:
         print("ab")
         for team in teams.keys():
@@ -77,3 +81,32 @@ def league_results():
 @app.route("/get-file")
 def get_file():
     return send_file("requirements.txt", as_attachment=True)
+
+@app.route("/league_results", methods = ['GET'])
+def leaderboard(status=False):
+    print(request.method)
+    print(request.form.keys(), request.args.keys())
+    with open('wrapped/static/roster_df.pkl', 'rb') as f:
+        df = pickle.load(f)
+    team_names = df['team name'].unique()
+    constraints = {}
+    week_constraint = request.args.get('lead_week', False)
+    if week_constraint and week_constraint != 'all':
+        constraints['week'] = int(week_constraint)
+    team_constraint = request.args.get('lead_team', False)
+    if team_constraint and team_constraint != 'all':
+        constraints['team name'] = team_constraint
+    position_constraint = request.args.get('lead_position', False)
+    if position_constraint and position_constraint != 'all':
+        constraints['roster slot id'] = position_constraint
+    number_constraint = request.args.get('lead_number', False)
+    if number_constraint:
+        n = int(number_constraint)
+    else:
+        n = 10
+    print(constraints, week_constraint, team_constraint, position_constraint, number_constraint)
+    get_individual_performance_leaders(df, constraints=constraints, n=n).to_html('wrapped/templates/ind_scoring_leaders_stats.html')
+    if status:
+        return team_names, df
+    else:
+        return render_template('results_leaderboard.html', teams=team_names, df=df)
