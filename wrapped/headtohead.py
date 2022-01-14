@@ -199,11 +199,11 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
                 roster_logs.append([round(roster_dict[position][current_team]['average'], 2), roster_dict[position][current_team]['place']])
 
         team_roster_df = pd.DataFrame(roster_logs, index=positions, columns=['Average', 'Place'])
+        pie_info = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
+        plt.figure()
+        plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
+        plt.title("Proportion of Total Points by Position")
         try:
-            pie_info = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
-            plt.figure()
-            plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
-            plt.title("Proportion of Total Points by Position")
             plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
         except:
             return 'Error creating pie chart.'
