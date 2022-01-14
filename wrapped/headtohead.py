@@ -8,6 +8,8 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+
 
 lineup_positions_key = {0: 'Quarterback (QB)', 1: 'Team Quarterback (TQB)', 2: 'Running Back (RB)',3: 'Running Back/Wide Receiver (RB/WR)'
     , 4: 'Wide Receiver (WR)', 5: 'Wide Receiver/Tight End (WR/TE)', 6: 'Tight End (TE)', 23: 'Flex (FLEX)', 20: 'Bench (BE)'
@@ -205,17 +207,22 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         plt.figure()
         plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
         plt.title("Proportion of Total Points by Position")
-        try:
-            tmpfile = BytesIO()
-            encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+        #try:
+        output = BytesIO()
+        FigureCanvas(plt.gcf()).print_png(output)
+        # tmpfile = BytesIO()
+        # encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
-            html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+        #html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
 
-            with open('wrapped/templates/generated/team' + str(current_team) + '_pie.html','w') as f:
-                f.write(html)
-            #plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
-        except:
-            return 'Error creating pie chart.'
+        pngImageB64String = "data:image/png;base64,"
+        pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
+
+        with open('wrapped/templates/generated/team' + str(current_team) + '_pie.html','w') as f:
+            f.write('<img src=\'' + pngImageB64String + '\'>')
+        #     #plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
+        # except:
+        #     return 'Error creating pie chart.'
         #except:
         #    return 'Error creating roster dataframe.'             
         try:
