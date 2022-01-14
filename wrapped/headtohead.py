@@ -207,7 +207,6 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         plt.title("Proportion of Total Points by Position")
         try:
             tmpfile = BytesIO()
-            plt.savefig(tmpfile, format='png')
             encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
             html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
