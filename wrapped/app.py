@@ -106,7 +106,7 @@ def leaderboard(status=False):
         best = False
     else:
         best = True
-    get_individual_performance_leaders(df, constraints=constraints, n=n, best=best).drop(columns=['team id', 'position id', 'roster slot id', 'roster slot']).to_html('wrapped/templates/generated/ind_scoring_leaders_stats.html', index=False)
+    get_individual_performance_leaders(df, constraints=constraints, n=n, best=best).drop(columns=['team id', 'position id', 'roster slot id', 'roster slot']).to_html('wrapped/templates/generated_ind_scoring_leaders_stats.html', index=False)
     if status:
         return team_names, df
     else:

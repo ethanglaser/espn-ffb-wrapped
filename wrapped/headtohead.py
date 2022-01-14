@@ -234,8 +234,8 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         #    return 'Error creating roster dataframe.'             
         try:
             if create_files:
-                team_df.to_html('wrapped/templates/generated/team' + str(current_team) + '.html')
-                team_roster_df.to_html('wrapped/templates/generated/team' + str(current_team) + '_roster.html')
+                team_df.to_html('wrapped/templates/generated_team' + str(current_team) + '.html')
+                team_roster_df.to_html('wrapped/templates/generated_team' + str(current_team) + '_roster.html')
         except:
             return 'Error creating html file for ' + teams[current_team]['name']
         scheduleinfo[current_team]['name'] = teams[current_team]['name']
@@ -262,8 +262,8 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         hdf = pd.DataFrame(h, columns = t, index = t)
         sdf = pd.DataFrame(s, columns = t, index = t)
         if create_files:
-            hdf.to_html('wrapped/templates/generated/headtohead.html')
-            sdf.to_html('wrapped/templates/generated/sameschedule.html')
+            hdf.to_html('wrapped/templates/generated_headtohead.html')
+            sdf.to_html('wrapped/templates/generated_sameschedule.html')
     except:
         return "Error creating dataframes."
 
