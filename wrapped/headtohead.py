@@ -77,20 +77,11 @@ def get_roster_results(leagueId, seasonId, swid, espn_s2, regular_season_length)
 
     return summary_data, roster_df
 
-            
-
-
-    # NWL: {'0': 1, '1': 0, '2': 2, '3': 0, '4': 2, '5': 1, '6': 1, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0, '15': 0, '16': 1, '17': 0, '18': 0, '19': 1, '20': 7, '21': 2, '22': 0, '23': 1, '24': 0}
-    # Nut station: {'0': 2, '1': 0, '2': 3, '3': 0, '4': 3, '5': 0, '6': 1, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 0, '15': 0, '16': 1, '17': 1, '18': 0, '19': 1, '20': 9, '21': 2, '22': 0, '23': 3, '24': 0}
-
-
-
 def gather_data(leagueId, seasonId, swid, espn_s2):
     url = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/' + str(seasonId) + '/segments/0/leagues/'  + str(leagueId) + '?'
     url2 = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/' + str(seasonId) + '/segments/0/leagues/'  + str(leagueId) + '?view=mMatchup'
     url3 = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/' + str(seasonId) + '/segments/0/leagues/'  + str(leagueId) + '?view=mSettings'
     
-
     r = requests.get(url, cookies={"swid": swid, "espn_s2": espn_s2})
     data = (json.loads(r.content))
     r2 = requests.get(url2, cookies={"swid": swid, "espn_s2": espn_s2})
@@ -188,30 +179,6 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
             if ties_s:
                 record_s +=  '-' + str(ties_s)
 
-                    
-            
-            
-            
-            # records = []
-            # for scores in [teams[current_opp]['scores'], teams[current_opp]['opponent scores']]:
-            #     wins = 0
-            #     losses = 0
-            #     ties = 0
-            #     for score1, score2 in zip(teams[current_team]['scores'], scores):
-            #         if score1 > score2:
-            #             wins += 1
-            #         elif score1 < score2:
-            #             losses += 1
-            #         else:
-            #             ties += 1
-            #     record = str(wins) + '-' + str(losses)
-            #     if ties:
-            #         record +=  '-' + str(ties)
-            #     records.append(record)
-            #get expected wins
-            #for score1, score2 in zip(team[current_team]['scores'], team[current_opp]['scores']):
-            #    if score1 > score2:
-
             if current_team == current_opp:
                 scheduleinfo[current_team]['record'] = record_s
             headtohead.append(record_h)
@@ -232,16 +199,16 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
                 roster_logs.append([round(roster_dict[position][current_team]['average'], 2), roster_dict[position][current_team]['place']])
 
         team_roster_df = pd.DataFrame(roster_logs, index=positions, columns=['Average', 'Place'])
-
-        pie_info = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
-        plt.figure()
-        plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
-        plt.title("Proportion of Total Points by Position")
-        plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
-
+        try:
+            pie_info = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
+            plt.figure()
+            plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
+            plt.title("Proportion of Total Points by Position")
+            plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
+        except:
+            return 'Error creating pie chart.'
         #except:
-        #    return 'Error creating roster dataframe.'
-                        
+        #    return 'Error creating roster dataframe.'             
         try:
             if create_files:
                 team_df.to_html('wrapped/templates/generated/team' + str(current_team) + '.html')
@@ -274,9 +241,7 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
             sdf.to_html('wrapped/templates/generated/sameschedule.html')
     except:
         return "Error creating dataframes."
-    # hdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx')
-    # sdf.to_excel('League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx')
-    # return 'League Results/' + leagueId + '-' + seasonId + '-' + 'HeadToHeadRecords.xlsx', 'League Results/' + leagueId + '-' + seasonId + '-' + 'SameScheduleRecords.xlsx'
+
 
 if __name__ == "__main__":
     # leagueId = sys.argv[3]
