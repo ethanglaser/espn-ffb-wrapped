@@ -207,22 +207,27 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         plt.figure()
         plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
         plt.title("Proportion of Total Points by Position")
-        #try:
-        output = BytesIO()
-        FigureCanvas(plt.gcf()).print_png(output)
-        # tmpfile = BytesIO()
-        # encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+        try:
+            output = BytesIO()
+            FigureCanvas(plt.gcf()).print_png(output)
+            # tmpfile = BytesIO()
+            # encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
-        #html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+        except:
+             return 'Error creating pie chart 2.'
+            #html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+        try:
+            pngImageB64String = "data:image/png;base64,"
+            pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
+        except:
+            return 'Error creating pie chart 1.'
+        try:
 
-        pngImageB64String = "data:image/png;base64,"
-        pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
-
-        with open('wrapped/templates/generated/team' + str(current_team) + '_pie.html','w') as f:
-            f.write('<img src=\'' + pngImageB64String + '\'>')
-        #     #plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
-        # except:
-        #     return 'Error creating pie chart.'
+            with open('wrapped/templates/generated/team' + str(current_team) + '_pie.html','w') as f:
+                f.write('<img src=\'' + pngImageB64String + '\'>')
+            #     #plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
+        except:
+             return 'Error creating pie chart 2.'
         #except:
         #    return 'Error creating roster dataframe.'             
         try:
