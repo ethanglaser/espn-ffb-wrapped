@@ -76,7 +76,7 @@ def league_results():
     else:
         for team in teams.keys():
             if request.form.get('team', False) == teams[team]['name']:
-                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names, piepath='/static/pie/team' +str(team) + '.png')
+                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names)
 
 @app.route("/league_results", methods = ['GET'])
 def leaderboard(status=False):

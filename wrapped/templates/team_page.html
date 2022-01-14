@@ -4,5 +4,5 @@
 <h4>Expected wins: {{expected_wins}}</h4>
 {% include 'generated/' + teamname + '.html' %}
 {% include 'generated/' + teamname + '_roster.html' %}
-<img src={{piepath}} alt={{teamname}}>
+{% include 'generated/' + teamname + '_pie.html' %}
 <!-- <h4>Opponent expected wins: {{opp_expected_wins}}</h4> -->
