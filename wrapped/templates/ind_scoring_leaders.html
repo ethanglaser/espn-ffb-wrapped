@@ -109,7 +109,7 @@
     </select>
     <select class="navbar" name="lead_position" id="position">
         <option value="all" selected>All </option>
-        {% for position in df['roster slot id'].unique() %}
+        {% for position in df['position'].unique() %}
         <option value="{{position}}">{{position}} </option>
         {% endfor %}
     </select>
@@ -122,6 +122,10 @@
         {% endif %}
 
         {% endfor %}
+    </select>
+    <select class="navbar" name="lead_top" id="top">
+        <option value="best" selected>Best </option>
+        <option value="worst">Worst </option>
     </select>
     <input type = "submit" class = "navbar" name = "enter" value = "Leaderboard" />
   </form>

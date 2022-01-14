@@ -1,7 +1,8 @@
 {% include 'results_navbar.html' %}
-<h2>{{teamname}}</h2>
+<h2>{{actualname}}</h2>
 <h4>Record: {{record}}</h4>
 <h4>Expected wins: {{expected_wins}}</h4>
-{% include teamname + '.html' %}
-{% include teamname + '_roster.html' %}
+{% include 'generated/' + teamname + '.html' %}
+{% include 'generated/' + teamname + '_roster.html' %}
+<img src={{piepath}} alt={{teamname}}>
 <!-- <h4>Opponent expected wins: {{opp_expected_wins}}</h4> -->

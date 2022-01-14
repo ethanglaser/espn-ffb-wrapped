@@ -3,7 +3,6 @@ from wrapped.headtohead import *
 import os
 
 
- 
 app = Flask(__name__)
 
 @app.route('/info', methods = ['POST', 'GET'])
@@ -48,6 +47,9 @@ def info():
         if request.form.get("Home", False) == 'Home':
             home()
 
+def display_loading_screen():
+    return render_template('loading_screen.html')
+
 @app.route('/', methods = ['POST', 'GET'])
 def home():
     return render_template('league_form.html')
@@ -61,7 +63,7 @@ def league_results():
         return render_template('results_h2h.html', teams=team_names)
     elif request.form.get("ss", False) == 'Same schedule':
         return render_template('results_ss.html', teams=team_names)
-    elif request.form.get("home", False) == 'Home':
+    elif request.form.get("home", False) == 'Home' or request.form.get("teams", False) == 'Teams':
         return render_template('results_home.html', teams=team_names)
     elif request.form.get("draft", False) == 'Draft analysis':
         return render_template('results_draft.html', teams=team_names)
@@ -72,20 +74,12 @@ def league_results():
         #     df = pickle.load(f)
         # return render_template('results_leaderboard.html', teams=team_names, df=df)
     else:
-        print("ab")
         for team in teams.keys():
-            print(teams[team]['name'])
-            if request.form.get(teams[team]['name'], False) == teams[team]['name']:
-                return render_template('team_page.html', teamname=teams[team]['name'], record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names)
-
-@app.route("/get-file")
-def get_file():
-    return send_file("requirements.txt", as_attachment=True)
+            if request.form.get('team', False) == teams[team]['name']:
+                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names, piepath='/static/pie/team' +str(team) + '.png')
 
 @app.route("/league_results", methods = ['GET'])
 def leaderboard(status=False):
-    print(request.method)
-    print(request.form.keys(), request.args.keys())
     with open('wrapped/static/roster_df.pkl', 'rb') as f:
         df = pickle.load(f)
     team_names = df['team name'].unique()
@@ -98,14 +92,18 @@ def leaderboard(status=False):
         constraints['team name'] = team_constraint
     position_constraint = request.args.get('lead_position', False)
     if position_constraint and position_constraint != 'all':
-        constraints['roster slot id'] = position_constraint
+        constraints['position'] = position_constraint
     number_constraint = request.args.get('lead_number', False)
     if number_constraint:
         n = int(number_constraint)
     else:
         n = 10
-    print(constraints, week_constraint, team_constraint, position_constraint, number_constraint)
-    get_individual_performance_leaders(df, constraints=constraints, n=n).to_html('wrapped/templates/ind_scoring_leaders_stats.html')
+    top_constraint = request.args.get('lead_top', False)
+    if top_constraint == 'worst':
+        best = False
+    else:
+        best = True
+    get_individual_performance_leaders(df, constraints=constraints, n=n, best=best).drop(columns=['team id', 'position id', 'roster slot id', 'roster slot']).to_html('wrapped/templates/generated/ind_scoring_leaders_stats.html', index=False)
     if status:
         return team_names, df
     else:

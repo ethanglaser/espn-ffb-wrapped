@@ -102,12 +102,12 @@
         <input type = "submit" class = "navbar" name = "ss" value = "Same schedule" />
         <input type = "submit" class = "navbar" name = "leader" value = "Leaderboard" />
         <div class="dropdown">
-        <button class="dropbtn">Teams
+        <button class="dropbtn" name = "teams" value = "Teams">Teams
             <i class="arrow down"></i>
         </button>
         <div class="dropdown-content">
             {% for team in teams %}
-            <input type = "submit" class = "navbar" name = "{{team}}" value = "{{team}}" style="width:300px" />
+            <input type = "submit" class = "navbar" name = "team" value = "{{team}}" style="width:300px" />
             {% endfor %}
         </div>
         </div>
