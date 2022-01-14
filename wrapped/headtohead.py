@@ -119,6 +119,7 @@ def get_pie_chart_info(df, starters_only=True):
         df = df[(df['roster slot id'] != 20) & (df['roster slot id'] != 21)]
 
     pie_chart_data = defaultdict(float)
+    pie_chart_data['position'] = 'proportion'
     for position_id in df['position id'].unique():
         if position_id in actual_positions_key.keys():
             pie_chart_data[actual_positions_key[position_id]] += df[df['position id'] == position_id]['score'].sum()
@@ -150,6 +151,7 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
     #teams_df = pd.DataFrame(teams_pre_df, columns=['week', 'team', 'opponent', 'score', 'opponent score'])
     scheduleinfo = defaultdict(dict)
     number_of_teams = len(teams)
+    pie_info = {}
     for current_team in teams.keys():
         headtohead = []
         sameschedule = []
@@ -203,31 +205,31 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
                 roster_logs.append([round(roster_dict[position][current_team]['average'], 2), roster_dict[position][current_team]['place']])
 
         team_roster_df = pd.DataFrame(roster_logs, index=positions, columns=['Average', 'Place'])
-        pie_info = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
-        plt.figure()
-        plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
-        plt.title("Proportion of Total Points by Position")
-        try:
-            output = BytesIO()
-            FigureCanvas(plt.gcf()).print_png(output)
-            # tmpfile = BytesIO()
-            # encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+        pie_info[current_team] = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
+        # plt.figure()
+        # plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
+        # plt.title("Proportion of Total Points by Position")
+        # try:
+        #     output = BytesIO()
+        #     FigureCanvas(plt.gcf()).print_png(output)
+        #     # tmpfile = BytesIO()
+        #     # encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
-        except:
-             return 'Error creating pie chart 2.'
-            #html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
-        try:
-            pngImageB64String = "data:image/png;base64,"
-            pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
-        except:
-            return 'Error creating pie chart 1.'
-        try:
+        # except:
+        #      return 'Error creating pie chart 2.'
+        #     #html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+        # try:
+        #     pngImageB64String = "data:image/png;base64,"
+        #     pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
+        # except:
+        #     return 'Error creating pie chart 1.'
+        # try:
 
-            with open('wrapped/templates/generated/team' + str(current_team) + '_pie.html','w') as f:
-                f.write('<img src=\'' + pngImageB64String + '\'>')
-            #     #plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
-        except:
-             return 'Error creating pie chart 2.'
+        #     with open('wrapped/templates/generated/team' + str(current_team) + '_pie.html','w') as f:
+        #         f.write('<img src=\'' + pngImageB64String + '\'>')
+        #     #     #plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
+        # except:
+        #      return 'Error creating pie chart 2.'
         #except:
         #    return 'Error creating roster dataframe.'             
         try:
@@ -245,6 +247,8 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
     roster_df['roster slot'] = roster_df['roster slot id'].map(lambda x: lineup_positions_key[x])
     with open('wrapped/static/roster_df.pkl', 'wb') as f:
         pickle.dump(roster_df, f)
+    with open('wrapped/static/pie_info.pkl', 'wb') as f:
+        pickle.dump(pie_info, f)
 
     h = [scheduleinfo[key]['headtohead'] for key in sorted(scheduleinfo.keys())]
     s = [scheduleinfo[key]['sameschedule'] for key in sorted(scheduleinfo.keys())]

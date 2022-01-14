@@ -74,9 +74,12 @@ def league_results():
         #     df = pickle.load(f)
         # return render_template('results_leaderboard.html', teams=team_names, df=df)
     else:
+        with open('wrapped/static/pie_info.pkl', 'rb') as f:
+            pie_info = pickle.load(f)
         for team in teams.keys():
             if request.form.get('team', False) == teams[team]['name']:
-                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names)
+                print(pie_info[team])
+                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names, data=pie_info[team])
 
 @app.route("/league_results", methods = ['GET'])
 def leaderboard(status=False):
