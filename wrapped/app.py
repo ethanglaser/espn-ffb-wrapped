@@ -132,4 +132,5 @@ def leaderboard(status=False):
     if status:
         return team_names, df, t_df
     else:
+        return f"{team_constraint}"
         return render_template('results_leaderboard.html', teams=team_names, df=df, t_df=t_df)
