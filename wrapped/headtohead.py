@@ -104,7 +104,7 @@ def get_league_name(league_id, season_id, swid, espn_s2):
     league_name = data3['settings']['name']
     return league_name
 
-def get_individual_performance_leaders(df, constraints={}, starters_only=True, n=10, best=True):
+def get_performance_leaders(df, constraints={}, starters_only=True, n=10, best=True):
     if starters_only:
         df = df[(df['roster slot id'] != 20) & (df['roster slot id'] != 21)]
     for key in constraints.keys():
@@ -133,7 +133,7 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
     except:
         return "Error gathering data from api."
     teams = {}
-    #teams_pre_df = []
+    teams_pre_df = []
     for team in data['teams']:
         teams[team['id']] = {}
         teams[team['id']]['name'] = team['location'] + ' ' + team['nickname']
@@ -147,8 +147,15 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         teams[game['home']['teamId']]['scores'].append(game['home']['totalPoints'])
         teams[game['home']['teamId']]['opponents'].append(game['away']['teamId'])
         teams[game['home']['teamId']]['opponents scores'].append(game['away']['totalPoints'])
-        #teams_pre_df.append([game['matchupPeriodId'], game['away']['teamId'], game['home']['teamId'], game['away']['totalPoints'], game['home']['totalPoints']])
-    #teams_df = pd.DataFrame(teams_pre_df, columns=['week', 'team', 'opponent', 'score', 'opponent score'])
+
+        teams_pre_df.append([game['matchupPeriodId'], game['away']['teamId'], game['home']['teamId'], game['away']['totalPoints'], game['home']['totalPoints']])
+        teams_pre_df.append([game['matchupPeriodId'], game['home']['teamId'], game['away']['teamId'], game['home']['totalPoints'], game['away']['totalPoints']])
+    teams_df = pd.DataFrame(teams_pre_df, columns=['week', 'team', 'opponent', 'score', 'opponent score'])
+    teams_df['team name'] = teams_df['team'].map(lambda x: teams[x]['name'])
+    teams_df['opponent name'] = teams_df['opponent'].map(lambda x: teams[x]['name'])
+    with open('wrapped/static/weekly_team_scores.pkl', 'wb') as f:
+        pickle.dump(teams_df, f)
+    
     scheduleinfo = defaultdict(dict)
     number_of_teams = len(teams)
     pie_info = {}
@@ -206,30 +213,6 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
 
         team_roster_df = pd.DataFrame(roster_logs, index=positions, columns=['Average', 'Place'])
         pie_info[current_team] = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
-        # plt.figure()
-        # plt.pie([val if val >= 0 else 0 for val in pie_info.values()], labels=pie_info.keys(), autopct='%1.1f%%')
-        # plt.title("Proportion of Total Points by Position")
-        # try:
-        #     output = BytesIO()
-        #     FigureCanvas(plt.gcf()).print_png(output)
-        #     # tmpfile = BytesIO()
-        #     # encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
-
-        # except:
-        #      return 'Error creating pie chart 2.'
-        #     #html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
-        # try:
-        #     pngImageB64String = "data:image/png;base64,"
-        #     pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
-        # except:
-        #     return 'Error creating pie chart 1.'
-        # try:
-
-        #     with open('wrapped/templates/generated/team' + str(current_team) + '_pie.html','w') as f:
-        #         f.write('<img src=\'' + pngImageB64String + '\'>')
-        #     #     #plt.savefig('wrapped/static/pie/team' + str(current_team) + '.png')
-        # except:
-        #      return 'Error creating pie chart 2.'
         #except:
         #    return 'Error creating roster dataframe.'             
         try:

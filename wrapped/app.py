@@ -68,8 +68,8 @@ def league_results():
     elif request.form.get("draft", False) == 'Draft analysis':
         return render_template('results_draft.html', teams=team_names)
     elif request.form.get("leader", False) == 'Leaderboard':
-        t, d = leaderboard(status=True)
-        return render_template('results_leaderboard.html', teams=t, df=d)
+        t, d, t_d = leaderboard(status=True)
+        return render_template('results_leaderboard.html', teams=t, df=d, t_df=t_d)
         # with open('wrapped/static/roster_df.pkl', 'rb') as f:
         #     df = pickle.load(f)
         # return render_template('results_leaderboard.html', teams=team_names, df=df)
@@ -106,8 +106,30 @@ def leaderboard(status=False):
         best = False
     else:
         best = True
-    get_individual_performance_leaders(df, constraints=constraints, n=n, best=best).drop(columns=['team id', 'position id', 'roster slot id', 'roster slot']).to_html('wrapped/templates/generated_ind_scoring_leaders_stats.html', index=False)
-    if status:
-        return team_names, df
+    get_performance_leaders(df, constraints=constraints, n=n, best=best).drop(columns=['team id', 'position id', 'roster slot id', 'roster slot']).to_html('wrapped/templates/generated_ind_scoring_leaders_stats.html', index=False)
+    
+    with open('wrapped/static/weekly_team_scores.pkl', 'rb') as f:
+        t_df = pickle.load(f)
+    t_constraints = {}
+    t_week_constraint = request.args.get('t_lead_week', False)
+    if t_week_constraint and t_week_constraint != 'all':
+        t_constraints['week'] = int(t_week_constraint)
+    t_team_constraint = request.args.get('t_lead_team', False)
+    if t_team_constraint and t_team_constraint != 'all':
+        t_constraints['team name'] = t_team_constraint
+    t_number_constraint = request.args.get('t_lead_number', False)
+    if t_number_constraint:
+        t_n = int(t_number_constraint)
     else:
-        return render_template('results_leaderboard.html', teams=team_names, df=df)
+        t_n = 10
+    t_top_constraint = request.args.get('t_lead_top', False)
+    if t_top_constraint == 'worst':
+        t_best = False
+    else:
+        t_best = True
+    #replace with get_team_performance_leaders
+    get_performance_leaders(t_df, constraints=t_constraints, n=t_n, best=t_best, starters_only=False).drop(columns=['team', 'opponent']).to_html('wrapped/templates/generated_team_scoring_leaders_stats.html', index=False)    
+    if status:
+        return team_names, df, t_df
+    else:
+        return render_template('results_leaderboard.html', teams=team_names, df=df, t_df=t_df)

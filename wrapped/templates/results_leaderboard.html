@@ -1,3 +1,19 @@
+<style>
+    @font-face {
+            font-family: 'espn';
+            src: url('/static/fonts/esp.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    .blackespn {
+        font-family: 'espn';
+        color: black;
+    }
+</style>
 {% include 'results_navbar.html' %}
+<h2 class="blackespn">Weekly Player Scoring Leaderboard:</h1>
 {% include 'ind_scoring_leaders.html' %}
 {% include 'generated_ind_scoring_leaders_stats.html' %}
+<h2 class="blackespn">Weekly Team Scoring Leaderboard:</h1>
+{% include 'team_scoring_leaders.html' %}
+{% include 'generated_team_scoring_leaders_stats.html' %}
