@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, Response, send_file, redirect, url_for
 from wrapped.headtohead import *
+from wrapped.draft import *
 import os
 
 
@@ -12,32 +13,37 @@ def data():
         pass
     if request.method == 'POST':
         if request.form.get("Submit", False) == 'Submit':
+            #try:
+            if os.path.exists("wrapped/templates/sameschedule.html"):
+                os.remove("wrapped/templates/sameschedule.html")
+            if os.path.exists("wrapped/templates/headtohead.html"):
+                os.remove("wrapped/templates/headtohead.html")
+            league_id = request.form.get("league_id", False)
+            season_id = request.form.get("season_id", False)
+            swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
+            a = get_h2h(league_id, season_id, swid, espn_s2)
+            get_draft_df(league_id, season_id, swid, espn_s2)
+            # try:
+            #     get_draft_df(league_id, season_id, swid, espn_s2)
+            # except:
+            #     return f"Error with draft data."
+            if a:
+                return f"{a}"
             try:
-                if os.path.exists("wrapped/templates/sameschedule.html"):
-                    os.remove("wrapped/templates/sameschedule.html")
-                if os.path.exists("wrapped/templates/headtohead.html"):
-                    os.remove("wrapped/templates/headtohead.html")
-                league_id = request.form.get("league_id", False)
-                season_id = request.form.get("season_id", False)
-                swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
-                a = get_h2h(league_id, season_id, swid, espn_s2)
-                if a:
-                    return f"{a}"
-                try:
-                    with open('wrapped/static/team_names.pkl', 'rb') as f:
-                        teams = pickle.load(f)
-                    league_name = get_league_name(league_id, season_id, swid, espn_s2)
-                    return render_template('results_home.html', league_name=league_name, teams=[teams[team]['name'] for team in teams.keys()])
-                except:
-                    return f"Error redirecting to league results."
+                with open('wrapped/static/team_names.pkl', 'rb') as f:
+                    teams = pickle.load(f)
+                league_name = get_league_name(league_id, season_id, swid, espn_s2)
+                return render_template('results_home.html', league_name=league_name, teams=[teams[team]['name'] for team in teams.keys()])
+            except:
+                return f"Error redirecting to league results."
                 #return render_template('league_results.html')
                 # try:
                 #     f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)
                 #     #f1, f2 = get_h2h(request.form.get("league_id", False), request.form.get("season_id", False), request.form.get("swid", False), request.form.get("espn_s2", False))
                 # except:
                 #     return f"Error: Invalid League ID, Season ID, or SWID {league_id} {season_id} {swid} {espn_s2}"
-            except:
-                return f"could not get from request.form"
+            # except:
+            #     return f"could not get from request.form"
             #return send_file(f1, as_attachment=True)#, send_file(f2, as_attachment=True)
         if request.form.get("Info", False) == 'Info':
             return render_template('info.html')
@@ -68,8 +74,8 @@ def league_results():
     elif request.form.get("draft", False) == 'Draft analysis':
         return render_template('results_draft.html', teams=team_names)
     elif request.form.get("leader", False) == 'Leaderboard':
-        t, d, t_d = leaderboard(status=True)
-        return render_template('results_leaderboard.html', teams=t, df=d, t_df=t_d)
+        t, d, t_d, d_d = leaderboard(status=True)
+        return render_template('results_leaderboard.html', teams=t, df=d, t_df=t_d, d_df=d_d)
         # with open('wrapped/static/roster_df.pkl', 'rb') as f:
         #     df = pickle.load(f)
         # return render_template('results_leaderboard.html', teams=team_names, df=df)
@@ -129,8 +135,31 @@ def leaderboard(status=False):
         t_best = True
     #replace with get_team_performance_leaders
     get_performance_leaders(t_df, constraints=t_constraints, n=t_n, best=t_best, starters_only=False).drop(columns=['team', 'opponent']).to_html('wrapped/templates/generated_team_scoring_leaders_stats.html', index=False)    
-    if status:
-        return team_names, df, t_df
+    
+    with open('wrapped/static/draft_data.pkl', 'rb') as f:
+        d_df = pickle.load(f)
+    d_constraints = {}
+    d_position_constraint = request.args.get('d_lead_position', False)
+    if d_position_constraint and d_position_constraint != 'all':
+        d_constraints['Position'] = d_position_constraint
+    d_team_constraint = request.args.get('d_lead_team', False)
+    if d_team_constraint and d_team_constraint != 'all':
+        d_constraints['Fantasy Team'] = d_team_constraint
+    d_number_constraint = request.args.get('d_lead_number', False)
+    if d_number_constraint:
+        d_n = int(d_number_constraint)
     else:
-        return f"{team_constraint}"
-        return render_template('results_leaderboard.html', teams=team_names, df=df, t_df=t_df)
+        d_n = 10
+    d_top_constraint = request.args.get('d_lead_top', False)
+    if d_top_constraint == 'worst':
+        d_best = False
+    else:
+        d_best = True
+    #replace with get_team_performance_leaders
+    get_performance_leaders(d_df, constraints=d_constraints, n=d_n, best=d_best, starters_only=False, rating=True)[['ovr_draft', 'Player Name', 'Fantasy Team', 'Position', 'position_draft', 'position_finish', 'pts_total', 'pts_avg', 'rating']].to_html('wrapped/templates/generated_draft_scoring_leaders_stats.html', index=False)    
+    
+    
+    if status:
+        return team_names, df, t_df, d_df
+    else:
+        return render_template('results_leaderboard.html', teams=team_names, df=df, t_df=t_df, d_df=d_df)

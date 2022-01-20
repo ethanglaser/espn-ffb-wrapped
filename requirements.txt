@@ -6,3 +6,4 @@ django
 gunicorn
 django-heroku
 matplotlib
+sklearn

@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 
-*.pkl
+*/static/*.pkl
 wrapped/templates/generated*
 wrapped/static/pie/*
 *team*.png

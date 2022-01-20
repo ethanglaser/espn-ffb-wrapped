@@ -104,15 +104,19 @@ def get_league_name(league_id, season_id, swid, espn_s2):
     league_name = data3['settings']['name']
     return league_name
 
-def get_performance_leaders(df, constraints={}, starters_only=True, n=10, best=True):
+def get_performance_leaders(df, constraints={}, starters_only=True, n=10, best=True, rating=False):
     if starters_only:
         df = df[(df['roster slot id'] != 20) & (df['roster slot id'] != 21)]
+    if rating:
+        metric = 'rating'
+    else:
+        metric = 'score'
     for key in constraints.keys():
         df = df[df[key] == constraints[key]]
     if best:
-        return df.nlargest(n, 'score')
+        return df.nlargest(n, metric)
     else:
-        return df.nsmallest(n, 'score')
+        return df.nsmallest(n, metric)
 
 def get_pie_chart_info(df, starters_only=True):
     if starters_only:
