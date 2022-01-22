@@ -114,6 +114,8 @@ def leaderboard(status=False):
     else:
         best = True
     if os.path.isfile(os.path.join(current_dir, 'templates/generated_ind_scoring_leaders_stats.html')):
+        a = os.listdir(os.path.join(current_dir, 'templates'))
+        return f"{a}"
         os.remove(os.path.join(current_dir, 'templates/generated_ind_scoring_leaders_stats.html'))
     get_performance_leaders(df, constraints=constraints, n=n, best=best).rename(columns={'score': 'Score', 'player': 'Player', 'position': 'Position', 'team name': 'Team Name', 'week': 'Week'})[['Score', 'Player', 'Position', 'Team Name', 'Week']].to_html('wrapped/templates/generated_ind_scoring_leaders_stats.html', index=False)
     
