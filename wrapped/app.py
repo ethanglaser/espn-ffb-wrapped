@@ -141,10 +141,10 @@ def leaderboard(status=False):
         os.remove(os.path.join(current_dir, 'templates/generated_team_scoring_leaders_stats.html'))
     ab = get_performance_leaders(t_df, constraints=t_constraints, n=t_n, best=t_best, starters_only=False).rename(columns={'score': 'Score', 'team name': 'Team Name', 'week': 'Week'})[['Score', 'Team Name', 'Week']]
     ab.to_html('wrapped/templates/generated_team_scoring_leaders_stats.html', index=False)    
-    ab.to_html('wrapped/templates/ab.html', index=False)    
+    ab.to_html('wrapped/templates/bc.html', index=False)    
     
     if not status:
-        return render_template('ab.html', teams=team_names, df=df)
+        return render_template('bc.html', teams=team_names, df=df)
 
     with open('wrapped/static/draft_data.pkl', 'rb') as f:
         d_df = pickle.load(f)
