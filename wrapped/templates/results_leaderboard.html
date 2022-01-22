@@ -13,10 +13,10 @@
 {% include 'results_navbar.html' %}
 <h2 class="blackespn">Weekly Player Scoring Leaderboard:</h1>
 {% include 'ind_scoring_leaders.html' %}
-{% include 'generated_ind_scoring_leaders_stats.html' %}
+{{ ind_scoring_leaders|safe }}
 <h2 class="blackespn">Weekly Team Scoring Leaderboard:</h1>
 {% include 'team_scoring_leaders.html' %}
-{% include 'generated_team_scoring_leaders_stats.html' %}
+{{ team_scoring_leaders|safe }}
 <h2 class="blackespn">Draft Pick Value Leaderboard:</h1>
 {% include 'draft_scoring_leaders.html' %}
-{% include 'generated_draft_scoring_leaders_stats.html' %}
+{{ draft_scoring_leaders|safe }}
