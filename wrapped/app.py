@@ -5,6 +5,7 @@ import os
 
 
 app = Flask(__name__)
+current_dir = os.path.dirname(__file__)
 
 @app.route('/info', methods = ['POST', 'GET'])
 def data():
@@ -112,8 +113,8 @@ def leaderboard(status=False):
         best = False
     else:
         best = True
-    if os.path.isfile('wrapped/templates/generated_ind_scoring_leaders_stats.html'):
-        os.remove('wrapped/templates/generated_ind_scoring_leaders_stats.html')
+    if os.path.isfile(os.path.join(current_dir, 'templates/generated_ind_scoring_leaders_stats.html')):
+        os.remove(os.path.join(current_dir, 'templates/generated_ind_scoring_leaders_stats.html'))
     get_performance_leaders(df, constraints=constraints, n=n, best=best).rename(columns={'score': 'Score', 'player': 'Player', 'position': 'Position', 'team name': 'Team Name', 'week': 'Week'})[['Score', 'Player', 'Position', 'Team Name', 'Week']].to_html('wrapped/templates/generated_ind_scoring_leaders_stats.html', index=False)
     
     with open('wrapped/static/weekly_team_scores.pkl', 'rb') as f:
@@ -136,8 +137,8 @@ def leaderboard(status=False):
     else:
         t_best = True
     #replace with get_team_performance_leaders
-    if os.path.isfile('wrapped/templates/generated_team_scoring_leaders_stats.html'):
-        os.remove('wrapped/templates/generated_team_scoring_leaders_stats.html')
+    if os.path.isfile(os.path.join(current_dir, 'templates/generated_team_scoring_leaders_stats.html')):
+        os.remove(os.path.join(current_dir, 'templates/generated_team_scoring_leaders_stats.html'))
     get_performance_leaders(t_df, constraints=t_constraints, n=t_n, best=t_best, starters_only=False).rename(columns={'score': 'Score', 'team name': 'Team Name', 'week': 'Week'})[['Score', 'Team Name', 'Week']].to_html('wrapped/templates/generated_team_scoring_leaders_stats.html', index=False)    
     
     with open('wrapped/static/draft_data.pkl', 'rb') as f:
@@ -160,8 +161,8 @@ def leaderboard(status=False):
     else:
         d_best = True
     #replace with get_team_performance_leaders
-    if os.path.isfile('wrapped/templates/generated_draft_scoring_leaders_stats.html'):
-        os.remove('wrapped/templates/generated_draft_scoring_leaders_stats.html')
+    if os.path.isfile(os.path.join(current_dir, 'templates/generated_draft_scoring_leaders_stats.html')):
+        os.remove(os.path.join(current_dir, 'templates/generated_draft_scoring_leaders_stats.html'))
     get_performance_leaders(d_df, constraints=d_constraints, n=d_n, best=d_best, starters_only=False, rating=True).rename(columns={'position_draft': 'Position-Based Draft Pick', 'position_finish': 'Position-Based Season Finish', 'pts_total': 'Total Points', 'pts_avg': 'Average Points'})[['Player Name', 'Fantasy Team', 'Position', 'Position-Based Draft Pick', 'Position-Based Season Finish', 'Total Points', 'Average Points']].to_html('wrapped/templates/generated_draft_scoring_leaders_stats.html', index=False)    
     
     if status:
