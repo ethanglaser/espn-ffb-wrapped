@@ -69,7 +69,6 @@ def getDraftResults(espn_s2, swid, url, playerData, fantasyTeamsKey):
         draftData[pick['playerId']] = playerData[pick['playerId']]
         draftData[pick['playerId']]['Overall Draft Pick'] = pick['overallPickNumber']
         draftData[pick['playerId']]['Fantasy Team'] = fantasyTeamsKey[pick['teamId']]
-        draftData[pick['playerId']]['Overall Draft Pick'] = draftPositionOrder[draftData[pick['playerId']]['Position']]
         draftData[pick['playerId']]['Position-Based Draft Pick'] = draftPositionOrder[draftData[pick['playerId']]['Position']]
         draftPositionOrder[draftData[pick['playerId']]['Position']] += 1
 
@@ -130,11 +129,23 @@ def get_draft_df(leagueId, seasonId, swid, espn_s2):
         model = pickle.load(f)
     for feature in model_features:
         if feature not in processed_df.columns:
+            print(feature)
             processed_df[feature] = 0
+    #processed_df.to_csv('temppp.csv')
+    processed_df.fillna(0, inplace=True)
     processed_df['rating'] = model.predict(processed_df[model_features]).round(3)
-    processed_df[['ovr_draft', 'Player Name', 'Fantasy Team', 'Position', 'position_draft', 'position_finish', 'pts_total', 'pts_avg', 'rating']].to_html('wrapped/templates/draft_results.html', index=False)
     with open('wrapped/static/draft_data.pkl', 'wb') as f:
         pickle.dump(processed_df, f)
+    processed_df.style.apply(color_picks, axis=1)
+    processed_df[['ovr_draft', 'Player Name', 'Fantasy Team', 'Position', 'position_draft', 'position_finish', 'pts_total', 'pts_avg', 'rating']].to_html('wrapped/templates/generated_draft_results.html', index=False)
+
+def color_picks(df):
+    if df['rating'] > 7:
+        return ['background-color: green']*5
+    elif df['rating'] > 3:
+        return ['background-color: yellow']*5
+    else:
+        return ['background-color: red']*5
 
 
 
