@@ -9,43 +9,33 @@ current_dir = os.path.dirname(__file__)
 
 @app.route('/info', methods = ['POST', 'GET'])
 def data():
-    if request.method == 'GET':
-        #idk what to put here or if GET is even necessary
-        pass
     if request.method == 'POST':
         if request.form.get("Submit", False) == 'Submit':
-            #try:
-            if os.path.exists("wrapped/templates/sameschedule.html"):
-                os.remove("wrapped/templates/sameschedule.html")
-            if os.path.exists("wrapped/templates/headtohead.html"):
-                os.remove("wrapped/templates/headtohead.html")
             league_id = request.form.get("league_id", False)
             season_id = request.form.get("season_id", False)
             swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
             a = get_h2h(league_id, season_id, swid, espn_s2)
-            get_draft_df(league_id, season_id, swid, espn_s2)
+            b = get_draft_df(league_id, season_id, swid, espn_s2)
             # try:
             #     get_draft_df(league_id, season_id, swid, espn_s2)
             # except:
             #     return f"Error with draft data."
-            if a:
-                return f"{a}"
+            if a or b:
+                if str(league_id) == '39276' and int(season_id) < 2018:
+                    return render_template('boi.html')
+                if a:
+                    return f"{a}"
+                if b:
+                    return f"{b}"
             try:
                 with open('wrapped/static/team_names.pkl', 'rb') as f:
                     teams = pickle.load(f)
-                league_name = get_league_name(league_id, season_id, swid, espn_s2)
+                with open('wrapped/static/league_name.txt', 'r') as f:
+                    league_name = f.read()
                 return render_template('results_home.html', league_name=league_name, teams=[teams[team]['name'] for team in teams.keys()])
             except:
                 return f"Error redirecting to league results."
-                #return render_template('league_results.html')
-                # try:
-                #     f1, f2 = get_h2h(league_id, season_id, swid, espn_s2)
-                #     #f1, f2 = get_h2h(request.form.get("league_id", False), request.form.get("season_id", False), request.form.get("swid", False), request.form.get("espn_s2", False))
-                # except:
-                #     return f"Error: Invalid League ID, Season ID, or SWID {league_id} {season_id} {swid} {espn_s2}"
-            # except:
-            #     return f"could not get from request.form"
-            #return send_file(f1, as_attachment=True)#, send_file(f2, as_attachment=True)
+
         if request.form.get("Info", False) == 'Info':
             return render_template('info.html')
 
@@ -71,7 +61,9 @@ def league_results():
     elif request.form.get("ss", False) == 'Same schedule':
         return render_template('results_ss.html', teams=team_names)
     elif request.form.get("home", False) == 'Home' or request.form.get("teams", False) == 'Teams':
-        return render_template('results_home.html', teams=team_names)
+        with open('wrapped/static/league_name.txt', 'r') as f:
+            league_name = f.read()
+        return render_template('results_home.html', teams=team_names, league_name=league_name)
     elif request.form.get("draft", False) == 'Draft analysis':
         return render_template('results_draft.html', teams=team_names)
     elif request.form.get("leader", False) == 'Leaderboard':
@@ -85,8 +77,7 @@ def league_results():
             pie_info = pickle.load(f)
         for team in teams.keys():
             if request.form.get('team', False) == teams[team]['name']:
-                print(pie_info[team])
-                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names, data=pie_info[team])
+                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names, data1=pie_info[team][0])#, data2=pie_info[team][1])
 
 @app.route("/league_results", methods = ['GET'])
 def leaderboard(status=False):

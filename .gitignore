@@ -130,6 +130,7 @@ dmypy.json
 
 
 */static/*.pkl
+*/static/*.txt
 wrapped/templates/generated*
 wrapped/static/pie/*
 *team*.png

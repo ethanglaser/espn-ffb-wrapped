@@ -116,7 +116,10 @@ def get_draft_df(leagueId, seasonId, swid, espn_s2):
     positionsKey = {16: 'D/ST', 14: 'HC', 5: 'K', 1: 'QB', 2: 'RB', 3: 'WR', 4: 'TE', 7: 'K', 9: 'RB'}
     nflTeamsKey = {0: 'FA', 34: 'Texans', 33: 'Ravens', 30: 'Jaguars', 29: 'Panthers',  28: 'Redskins', 27: 'Buccaneers', 26: 'Seahawks', 25: '49ers', 24: 'Chargers', 23: 'Steelers', 22: 'Cardinals', 21: 'Eagles', 20: 'Jets', 19: 'Giants', 18: 'Saints', 17: 'Patriots', 16: 'Vikings', 15: 'Dolphins', 14: 'Rams', 13: 'Raiders', 12: 'Chiefs', 11: 'Colts', 10: 'Titans', 9: 'Packers', 8: 'Lions', 7: 'Broncos', 6: 'Cowboys', 5: 'Browns', 4: 'Bengals', 3: 'Bears', 2: 'Bills', 1: 'Falcons'}
     column_renames = {'Pick Rating (1 worst, 10 best)': 'rating', 'Position-Based Draft Pick': 'position_draft', 'Position-Based Season Finish': 'position_finish', 'Overall Draft Pick': 'ovr_draft', 'Overall Finish': 'ovr_finish', 'Total Points': 'pts_total', 'Number of Weeks Missed': 'wks_out', 'Average Weekly Scoring': 'pts_avg', 'Position': 'pos'}
-    fantasyTeamsKey = getFantasyTeams(espn_s2, swid, url2)
+    try:    
+        fantasyTeamsKey = getFantasyTeams(espn_s2, swid, url2)
+    except:
+        return 'Error retrieving data from API'
     playerData = getSeasonResults(espn_s2, swid, url2, positionsKey, nflTeamsKey, leagueId, seasonId)
     draftData = getDraftResults(espn_s2, swid, url2, playerData, fantasyTeamsKey)
     initial_df = pd.DataFrame(draftData.values()).drop(columns=['nflTeam'])
@@ -137,7 +140,7 @@ def get_draft_df(leagueId, seasonId, swid, espn_s2):
     with open('wrapped/static/draft_data.pkl', 'wb') as f:
         pickle.dump(processed_df, f)
     processed_df.style.apply(color_picks, axis=1)
-    processed_df[['ovr_draft', 'Player Name', 'Fantasy Team', 'Position', 'position_draft', 'position_finish', 'pts_total', 'pts_avg', 'rating']].to_html('wrapped/templates/generated_draft_results.html', index=False)
+    processed_df.rename(columns={'position_draft': 'Position-Based Draft Pick', 'position_finish': 'Position-Based Season Finish', 'pts_total': 'Total Points', 'pts_avg': 'Average Points', 'rating': 'Rating', 'ovr_draft': 'Overall Draft Pick'})[['Overall Draft Pick', 'Player Name', 'Fantasy Team', 'Position', 'Position-Based Draft Pick', 'Position-Based Season Finish', 'Total Points', 'Average Points', 'Rating']].to_html('wrapped/templates/generated_draft_results.html', index=False)
 
 def color_picks(df):
     if df['rating'] > 7:

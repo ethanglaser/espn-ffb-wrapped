@@ -4,7 +4,7 @@ from pprint import pprint
 import pandas as pd
 import sys
 import pickle
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
@@ -123,13 +123,19 @@ def get_pie_chart_info(df, starters_only=True):
         df = df[(df['roster slot id'] != 20) & (df['roster slot id'] != 21)]
 
     pie_chart_data = defaultdict(float)
-    pie_chart_data['position'] = 'proportion'
-    for position_id in df['position id'].unique():
+    for position_id in sorted(df['position id'].unique()):
         if position_id in actual_positions_key.keys():
             pie_chart_data[actual_positions_key[position_id]] += df[df['position id'] == position_id]['score'].sum()
         else:
             pie_chart_data[lineup_positions_key[position_id]] += df[df['position id'] == position_id]['score'].sum()
-    return pie_chart_data
+    ordered_pie_chart_data = OrderedDict([('position', 'proportion')] + [(ite[0], ite[1]) for ite in pie_chart_data.items()])
+
+    player_pie_chart_data = defaultdict(float)
+    for plyr in df['player'].unique():
+        player_pie_chart_data[plyr] += df[df['player'] == plyr]['score'].sum()
+    ordered_player_pie_chart_data = OrderedDict([('player', 'proportion')] + sorted(player_pie_chart_data.items(), key=lambda kv: kv[1], reverse=True))
+
+    return [ordered_pie_chart_data, ordered_player_pie_chart_data]
 
 def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
     try:
@@ -215,7 +221,7 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
                 positions.append(position)
                 roster_logs.append([round(roster_dict[position][current_team]['average'], 2), roster_dict[position][current_team]['place']])
 
-        team_roster_df = pd.DataFrame(roster_logs, index=positions, columns=['Average', 'Place'])
+        team_roster_df = pd.DataFrame(roster_logs, index=positions, columns=['Average', 'Rank'])
         pie_info[current_team] = get_pie_chart_info(roster_df[roster_df['team id'] == current_team])
         #except:
         #    return 'Error creating roster dataframe.'             
@@ -236,6 +242,9 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         pickle.dump(roster_df, f)
     with open('wrapped/static/pie_info.pkl', 'wb') as f:
         pickle.dump(pie_info, f)
+    league_name = get_league_name(leagueId, seasonId, swid, espn_s2)
+    with open('wrapped/static/league_name.txt', 'w') as f:
+        f.write(league_name)
 
     h = [scheduleinfo[key]['headtohead'] for key in sorted(scheduleinfo.keys())]
     s = [scheduleinfo[key]['sameschedule'] for key in sorted(scheduleinfo.keys())]
