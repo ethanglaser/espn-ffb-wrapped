@@ -14,6 +14,9 @@ def data():
             league_id = request.form.get("league_id", False)
             season_id = request.form.get("season_id", False)
             swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
+            for file in os.listdir(os.path.join(current_dir, 'templates/')):
+                if 'generated' in str(file):
+                    os.remove(os.path.join(current_dir, 'templates/' + file))
             a = get_h2h(league_id, season_id, swid, espn_s2)
             b = get_draft_df(league_id, season_id, swid, espn_s2)
             # try:
