@@ -258,8 +258,12 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         hdf = pd.DataFrame(h, columns = t, index = t)
         sdf = pd.DataFrame(s, columns = t, index = t)
         if create_files:
-            hdf.to_html('wrapped/templates/generated_headtohead.html')
-            sdf.to_html('wrapped/templates/generated_sameschedule.html')
+            with open('wrapped/static/headtohead.pkl', 'wb') as f:
+                pickle.dump(hdf, f)
+            with open('wrapped/static/sameschedule.pkl', 'wb') as f:
+                pickle.dump(sdf, f)
+            # hdf.to_html('wrapped/templates/generated_headtohead.html')
+            # sdf.to_html('wrapped/templates/generated_sameschedule.html')
     except:
         return "Error creating dataframes."
 

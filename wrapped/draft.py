@@ -139,8 +139,7 @@ def get_draft_df(leagueId, seasonId, swid, espn_s2):
     processed_df['rating'] = model.predict(processed_df[model_features]).round(3)
     with open('wrapped/static/draft_data.pkl', 'wb') as f:
         pickle.dump(processed_df, f)
-    processed_df.style.apply(color_picks, axis=1)
-    processed_df.rename(columns={'position_draft': 'Position-Based Draft Pick', 'position_finish': 'Position-Based Season Finish', 'pts_total': 'Total Points', 'pts_avg': 'Average Points', 'rating': 'Rating', 'ovr_draft': 'Overall Draft Pick'})[['Overall Draft Pick', 'Player Name', 'Fantasy Team', 'Position', 'Position-Based Draft Pick', 'Position-Based Season Finish', 'Total Points', 'Average Points', 'Rating']].to_html('wrapped/templates/generated_draft_results.html', index=False)
+    #processed_df.rename(columns={'position_draft': 'Position-Based Draft Pick', 'position_finish': 'Position-Based Season Finish', 'pts_total': 'Total Points', 'pts_avg': 'Average Points', 'rating': 'Rating', 'ovr_draft': 'Overall Draft Pick'})[['Overall Draft Pick', 'Player Name', 'Fantasy Team', 'Position', 'Position-Based Draft Pick', 'Position-Based Season Finish', 'Total Points', 'Average Points', 'Rating']])#.to_html('wrapped/templates/generated_draft_results.html', index=False)
 
 def color_picks(df):
     if df['rating'] > 7:

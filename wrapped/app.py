@@ -64,15 +64,23 @@ def league_results():
         teams = pickle.load(f)
     team_names = [teams[team]['name'] for team in teams.keys()]
     if request.form.get("h2h", False) == 'Head to head':
-        return render_template('generated_headtohead.html')#, teams=team_names)
+        with open('wrapped/static/headtohead.pkl', 'rb') as f:
+            headtohead = pickle.load(f)
+        return render_template('results_h2h.html', teams=team_names, h2h=headtohead.to_html())
     elif request.form.get("ss", False) == 'Same schedule':
-        return render_template('results_ss.html', teams=team_names)
+        with open('wrapped/static/sameschedule.pkl', 'rb') as f:
+            sameschedule = pickle.load(f)
+        return render_template('results_ss.html', teams=team_names, ss=sameschedule.to_html())
     elif request.form.get("home", False) == 'Home' or request.form.get("teams", False) == 'Teams':
         with open('wrapped/static/league_name.txt', 'r') as f:
             league_name = f.read()
         return render_template('results_home.html', teams=team_names, league_name=league_name)
     elif request.form.get("draft", False) == 'Draft analysis':
-        return render_template('results_draft.html', teams=team_names)
+        with open('wrapped/static/draft_data.pkl', 'rb') as f:
+            processed_df = pickle.load(f)
+        #.to_html('wrapped/templates/generated_draft_results.html', index=False)
+
+        return render_template('results_draft.html', teams=team_names, draft=processed_df.rename(columns={'position_draft': 'Position-Based Draft Pick', 'position_finish': 'Position-Based Season Finish', 'pts_total': 'Total Points', 'pts_avg': 'Average Points', 'rating': 'Rating', 'ovr_draft': 'Overall Draft Pick'})[['Overall Draft Pick', 'Player Name', 'Fantasy Team', 'Position', 'Position-Based Draft Pick', 'Position-Based Season Finish', 'Total Points', 'Average Points', 'Rating']].to_html(index=False))
     elif request.form.get("leader", False) == 'Leaderboard':
         t, d, t_d, d_d, isl, tsl, dsl = leaderboard(status=True)
         return render_template('results_leaderboard.html', teams=t, df=d, t_df=t_d, d_df=d_d, ind_scoring_leaders=isl, team_scoring_leaders=tsl, draft_scoring_leaders=dsl)
