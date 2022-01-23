@@ -14,13 +14,13 @@ def data():
             league_id = request.form.get("league_id", False)
             season_id = request.form.get("season_id", False)
             swid, espn_s2 = request.form.get("swid", False), request.form.get("espn_s2", False)
-            aa = os.listdir(os.path.join(current_dir, 'templates/'))
+            # aa = os.listdir(os.path.join(current_dir, 'templates/'))
             for file in os.listdir(os.path.join(current_dir, 'templates/')):
                 if 'generated' in str(file):
                     os.remove(os.path.join(current_dir, 'templates/' + file))
-            bb = os.listdir(os.path.join(current_dir, 'templates/'))
-            if str(league_id) == '1303917':
-                return f"{aa} {bb}"
+            # bb = os.listdir(os.path.join(current_dir, 'templates/'))
+            # if str(league_id) == '1303917':
+            #     return f"{aa} {bb}"
             a = get_h2h(league_id, season_id, swid, espn_s2)
             b = get_draft_df(league_id, season_id, swid, espn_s2)
             # try:
@@ -64,7 +64,7 @@ def league_results():
         teams = pickle.load(f)
     team_names = [teams[team]['name'] for team in teams.keys()]
     if request.form.get("h2h", False) == 'Head to head':
-        return render_template('results_h2h.html', teams=team_names)
+        return render_template('generated_headtohead.html')#, teams=team_names)
     elif request.form.get("ss", False) == 'Same schedule':
         return render_template('results_ss.html', teams=team_names)
     elif request.form.get("home", False) == 'Home' or request.form.get("teams", False) == 'Teams':
