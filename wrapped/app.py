@@ -90,9 +90,11 @@ def league_results():
     else:
         with open('wrapped/static/pie_info.pkl', 'rb') as f:
             pie_info = pickle.load(f)
+        with open('wrapped/static/team_info.pkl', 'rb') as f2:
+            team_info = pickle.load(f2)
         for team in teams.keys():
             if request.form.get('team', False) == teams[team]['name']:
-                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names, data1=pie_info[team][0])#, data2=pie_info[team][1])
+                return render_template('team_page.html', actualname=teams[team]['name'], teamname='team' + str(team), record=teams[team]['record'], expected_wins=round(teams[team]['expected wins'], 3), teams=team_names, data1=pie_info[team][0], team_df_html=team_info[team]['team_df'].to_html(), team_roster_df_html=team_info[team]['team_roster_df'].to_html())#, data2=pie_info[team][1])
 
 @app.route("/league_results", methods = ['GET'])
 def leaderboard(status=False):
@@ -119,8 +121,7 @@ def leaderboard(status=False):
         best = False
     else:
         best = True
-    if os.path.isfile(os.path.join(current_dir, 'templates/generated_ind_scoring_leaders_stats.html')):
-        os.remove(os.path.join(current_dir, 'templates/generated_ind_scoring_leaders_stats.html'))
+
     ind_scoring_leaders = get_performance_leaders(df, constraints=constraints, n=n, best=best).rename(columns={'score': 'Score', 'player': 'Player', 'position': 'Position', 'team name': 'Team Name', 'week': 'Week'})[['Score', 'Player', 'Position', 'Team Name', 'Week']].to_html(index=False)
     
     with open('wrapped/static/weekly_team_scores.pkl', 'rb') as f:
@@ -142,9 +143,7 @@ def leaderboard(status=False):
         t_best = False
     else:
         t_best = True
-    #replace with get_team_performance_leaders
-    if os.path.isfile(os.path.join(current_dir, 'templates/generated_team_scoring_leaders_stats.html')):
-        os.remove(os.path.join(current_dir, 'templates/generated_team_scoring_leaders_stats.html'))
+
     team_scoring_leaders = get_performance_leaders(t_df, constraints=t_constraints, n=t_n, best=t_best, starters_only=False).rename(columns={'score': 'Score', 'team name': 'Team Name', 'week': 'Week'})[['Score', 'Team Name', 'Week']].to_html(index=False)    
     
     with open('wrapped/static/draft_data.pkl', 'rb') as f:
@@ -166,9 +165,7 @@ def leaderboard(status=False):
         d_best = False
     else:
         d_best = True
-    #replace with get_team_performance_leaders
-    if os.path.isfile(os.path.join(current_dir, 'templates/generated_draft_scoring_leaders_stats.html')):
-        os.remove(os.path.join(current_dir, 'templates/generated_draft_scoring_leaders_stats.html'))
+    
     draft_scoring_leaders = get_performance_leaders(d_df, constraints=d_constraints, n=d_n, best=d_best, starters_only=False, rating=True).rename(columns={'position_draft': 'Position-Based Draft Pick', 'position_finish': 'Position-Based Season Finish', 'pts_total': 'Total Points', 'pts_avg': 'Average Points'})[['Player Name', 'Fantasy Team', 'Position', 'Position-Based Draft Pick', 'Position-Based Season Finish', 'Total Points', 'Average Points']].to_html(index=False)    
     
     if status:

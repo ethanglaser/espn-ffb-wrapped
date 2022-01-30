@@ -31,7 +31,7 @@
         .espn {
             /* font-family: 'Black Ops One', cursive; */
             font-family: 'espn';
-            font-size: 24px;
+            font-size: 160%;
         }
         input.button1{
             display:inline-block;
@@ -68,6 +68,29 @@
         pp {
             display: inline-block;
         }
+        #container {
+            width: 100%;
+        }
+
+        #container > div {
+            display: table-cell;
+        }
+
+        #left {
+            min-width: 150px;
+            height: 150px;
+        }
+
+        #middle {
+            vertical-align: top;
+            height: 150px;
+            width: 35%;
+        }
+
+        #right {
+            min-width: 150px;
+            height: 150px;
+        }
 
     </style>        
 </head>
@@ -77,16 +100,39 @@
     <p>Enter information for your season below to get analysis on draft results, team performance comparisons, hypothetical scenarios, and more!</p>
     <p> For information on filling in the fields below, select the info button, otherwise fill them in, hit submit, and see the results!</p>
     <br><br>
-    <img src="/static/ceedee.jpg" class="leftImage" alt="ceedee" width=168>
-    <img src="/static/dong.jpg" class="leftImage" alt="dong" width=260>
+    <!-- <img src="/static/ceedee.jpg" class="leftImage" alt="ceedee" width=13.2%>
+    <img src="/static/dong.jpg" class="leftImage" alt="dong" width=21%>
     <pp><span class="espn">League ID:</span> <input type = "text" name = "league_id" />
     <br><span class="espn">Season ID:</span> <input type = "text" name = "season_id" />
     <br><span class="espn">SWID:</span> <input type = "text" name = "swid" />
     <br><span class="espn">espn_s2:</span> <input type = "text" name = "espn_s2" />
     <br><br><input type = "submit" class = "button1" name = "Submit" value = "Submit" />
     <br><br><input type = "submit" class = "button1" name = "Info" value = "Info" /></pp>
-    <img src="/static/lamar.jpg" class="rightImage" alt="lamar" width=239>
-    <img src="/static/tyreek.png" class="rightImage" alt="tyreek" width=151>
+    <img src="/static/lamar.jpg" class="rightImage" alt="lamar" width=18.4%>
+    <img src="/static/tyreek.png" class="rightImage" alt="tyreek" width=11.8%>
+    <br><br><br><br><br><br> -->
+    <div id="container">
+    
+        <div id="left">
+            <img style="width: 35%;" src="/static/ceedee.jpg">
+            <img style="width: 55%;" src="/static/dong.jpg">
+        </div>
+        
+        <div id="middle">
+            <pp><span class="espn">League ID:</span> <input type = "text" name = "league_id" />
+            <br><span class="espn">Season ID:</span> <input type = "text" name = "season_id" />
+            <br><span class="espn">SWID:</span> <input type = "text" name = "swid" />
+            <br><span class="espn">espn_s2:</span> <input type = "text" name = "espn_s2" />
+            <br><br><input type = "submit" class = "button1" name = "Submit" value = "Submit" />
+            <br><br><input type = "submit" class = "button1" name = "Info" value = "Info" /></pp>
+        </div>
+        
+        <div id="right">
+            <img style="width: 31%;" src="/static/tyreek.png">
+            <img style="width: 49%;" src="/static/lamar.jpg">
+        </div>
+        
+    </div>
     <br><br><br><br><br><br>
     <footer>&copy; Copyright 2021 EPG</footer>
 </form>

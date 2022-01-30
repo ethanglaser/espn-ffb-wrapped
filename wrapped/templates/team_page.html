@@ -2,8 +2,6 @@
 <h2>{{actualname}}</h2>
 <h4>Record: {{record}}</h4>
 <h4>Expected wins: {{expected_wins}}</h4>
-{% include 'generated_' + teamname + '.html' %}
-{% include 'generated_' + teamname + '_roster.html' %}
+{{ team_df_html|safe }}
+{{ team_roster_df_html|safe }}
 {% include 'pie_template.html' %}
-<!-- 
-<h4>Opponent expected wins: {{opp_expected_wins}}</h4> -->

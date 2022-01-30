@@ -143,6 +143,7 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
     except:
         return "Error gathering data from api."
     teams = {}
+    team_df_pre_pkl = {}
     teams_pre_df = []
     for team in data['teams']:
         teams[team['id']] = {}
@@ -226,9 +227,12 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         #except:
         #    return 'Error creating roster dataframe.'             
         try:
-            if create_files:
-                team_df.to_html('wrapped/templates/generated_team' + str(current_team) + '.html')
-                team_roster_df.to_html('wrapped/templates/generated_team' + str(current_team) + '_roster.html')
+            team_df_pre_pkl[current_team] = {}
+            team_df_pre_pkl[current_team]['team_df'] = team_df
+            team_df_pre_pkl[current_team]['team_roster_df'] = team_roster_df
+            # if create_files:
+            #     team_df.to_html('wrapped/templates/generated_team' + str(current_team) + '.html')
+            #     team_roster_df.to_html('wrapped/templates/generated_team' + str(current_team) + '_roster.html')
         except:
             return 'Error creating html file for ' + teams[current_team]['name']
         scheduleinfo[current_team]['name'] = teams[current_team]['name']
@@ -242,6 +246,8 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
         pickle.dump(roster_df, f)
     with open('wrapped/static/pie_info.pkl', 'wb') as f:
         pickle.dump(pie_info, f)
+    with open('wrapped/static/team_info.pkl', 'wb') as f:
+        pickle.dump(team_df_pre_pkl, f)
     league_name = get_league_name(leagueId, seasonId, swid, espn_s2)
     with open('wrapped/static/league_name.txt', 'w') as f:
         f.write(league_name)
