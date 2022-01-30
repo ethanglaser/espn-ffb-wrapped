@@ -141,7 +141,7 @@ def get_h2h(leagueId, seasonId, swid, espn_s2, create_files=True):
     try:
         data, data2, reg_szn_len, roster_dict, roster_df = gather_data(leagueId, seasonId, swid, espn_s2)
     except:
-        return "Error gathering data from api."
+        return "Error gathering data from api. Please ensure league/season ID match a valid season and cookies are correct."
     teams = {}
     team_df_pre_pkl = {}
     teams_pre_df = []
