@@ -2,13 +2,9 @@ import json
 import requests
 from pprint import pprint
 import pandas as pd
-import sys
 import pickle
 from collections import defaultdict, OrderedDict
 import matplotlib.pyplot as plt
-import base64
-from io import BytesIO
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 
 lineup_positions_key = {0: 'Quarterback (QB)', 1: 'Team Quarterback (TQB)', 2: 'Running Back (RB)',3: 'Running Back/Wide Receiver (RB/WR)'
