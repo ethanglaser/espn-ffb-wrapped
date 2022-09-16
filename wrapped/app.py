@@ -2,13 +2,115 @@ from flask import Flask, render_template, request, Response, send_file, redirect
 from wrapped.headtohead import *
 from wrapped.draft import *
 import os
-
+import requests
+from selenium import webdriver
+import time
 
 app = Flask(__name__)
 current_dir = os.path.dirname(__file__)
 
+def get_credentials(user=None):
+    '''
+    This function identifies the SWID and ESPN_S2 for a user using Selenium.
+    
+    The function will identify the default Chrome profile for a user on the
+    machine, and open up a browser using this account.
+    
+    The user will be prompted to sign in to their ESPN account if they are
+    not auto-signed in by their browser.
+    
+    The swid and espn_s2 cookies are identified and returned.
+    '''
+    # Get list of users on computer
+    users = os.listdir('C://Users')
+    for i in ['All Users', 'Default', 'Default User', 'desktop.ini', 'Public']:
+        users.remove(i)
+    print("[FETCHING CREDENTIALS] All users: ", users)
+    
+    if user is None:
+        # Select first user
+        user = users[0]
+        print("[FETCHING CREDENTIALS] Using user: {}".format(users[0]))
+    
+    # Locate and use the default Chrome profile for the user
+    print("[FETCHING CREDENTIALS] Locating default Chrome profile...")
+    options = webdriver.ChromeOptions() 
+    options.add_argument(r'--user-data-dir=C:/Users/{}/AppData/Local/Google/Chrome/User Data'.format(user))
+    options.add_argument('--profile-directory=Default')
+
+    # Instantiate Chrome instance using Selenium and the default Chrome profile
+    print("[FETCHING CREDENTIALS] Instantiating Chrome browser...")
+    DRIVER_PATH = 'C://chromedriver.exe'
+    try: 
+        driver = webdriver.Chrome(executable_path=DRIVER_PATH, chrome_options=options)
+    except:
+        if "user data directory is already in use" in str(e):
+            #driver.close()  # Close window
+            raise Exception("Chrome is already open in another window. Please close all other Chrome windows and re-launch.")
+    
+    # Navigate to ESPN website for league and login
+    driver.get('https://fantasy.espn.com/')
+    print(driver.get_cookies())
+
+    # Check if user is logged in automatically by browser
+    cookies = [cookie["name"] for cookie in driver.get_cookies()] # Get list of cookie names
+    if ("SWID" not in cookies) or ("espn_s2" not in cookies):
+        # Wait for user to log in maunally
+        print("[FETCHING CREDENTIALS] Login to ESPN account in browser.")
+        driver.find_element_by_xpath('//*[@id="global-user-trigger"]').click()
+        #driver.find_element_by_xpath('//*[@id="global-viewport"]/div[3]/div/ul[1]/li[7]/a').click()
+        while True:
+            time.sleep(5)
+            cookies = [cookie["name"] for cookie in driver.get_cookies()] # Get updated list of cookie names
+            if ("SWID" in cookies) and ("espn_s2" in cookies):
+                print("[FETCHING CREDENTIALS] Login detected.")
+                break;            
+            print("[FETCHING CREDENTIALS] Login not detected... waiting 5 seconds...")
+    else:
+        print("[FETCHING CREDENTIALS] Login detected.")
+        pass
+           
+    # Identify cookies for user
+    swid, espn_s2 = None, None
+    cookies = driver.get_cookies()
+    for cookie in cookies:
+        if cookie['name'] == 'SWID':
+            swid = cookie['value'][1:-1]
+        if cookie['name'] == 'espn_s2':
+            espn_s2 = cookie['value']
+    
+    #return driver
+    if swid is None:
+        raise Exception("[FETCHING CREDENTIALS] ERROR: SWID cookie not found.")
+    if espn_s2 is None:
+        raise Exception("[FETCHING CREDENTIALS] ERROR: SWID cookie not found.")    
+    
+    # Close the browser        
+    driver.close()
+    
+    print("[FETCHING CREDENTIALS] ESPN Credenitals:\n[FETCHING CREDENTIALS] ---------------------")
+    print("[FETCHING CREDENTIALS] swid: {}\n[FETCHING CREDENTIALS] espn_s2: {}".format(swid, espn_s2))
+    return swid, espn_s2
+
+
 @app.route('/info', methods = ['POST', 'GET'])
 def data():
+    # OPEN WPM
+    session = requests.Session()
+    a_session = requests.Session()
+    a_session.get('https://espn.com/')
+    session_cookies = a_session.cookies
+    cookies_dictionary = session_cookies.get_dict()
+    print(cookies_dictionary)
+    # other = requests.get(url="https://espn.com/")
+    # #print(other.cookies._cookies)
+
+    # #print(other.request._cookies._cookies)
+    # r = a_session.post('https://espn.com', auth=('user', 'pass'),verify=False)
+    # print(r.text.keys())
+    print(get_credentials())
+
+
     if request.method == 'POST':
         if request.form.get("Submit", False) == 'Submit':
             league_id = request.form.get("league_id", False)
