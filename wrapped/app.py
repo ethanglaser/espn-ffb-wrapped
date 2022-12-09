@@ -22,7 +22,7 @@ def get_credentials(user=None):
     The swid and espn_s2 cookies are identified and returned.
     '''
     # Get list of users on computer
-    users = os.listdir('C:/Users')
+    users = os.listdir('C:\Users')
     for i in ['All Users', 'Default', 'Default User', 'desktop.ini', 'Public']:
         users.remove(i)
     print("[FETCHING CREDENTIALS] All users: ", users)
