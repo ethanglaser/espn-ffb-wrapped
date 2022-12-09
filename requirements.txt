@@ -7,3 +7,4 @@ gunicorn
 django-heroku
 matplotlib
 sklearn
+selenium
