@@ -108,7 +108,7 @@ def data():
     # #print(other.request._cookies._cookies)
     # r = a_session.post('https://espn.com', auth=('user', 'pass'),verify=False)
     # print(r.text.keys())
-    print(get_credentials())
+    # print(get_credentials())
 
 
     if request.method == 'POST':
